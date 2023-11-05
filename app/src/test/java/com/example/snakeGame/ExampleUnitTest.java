@@ -1,4 +1,4 @@
-package com.example.subhunter;
+package com.example.snakeGame;
 
 import org.junit.Test;
 
