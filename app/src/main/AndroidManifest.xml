@@ -21,10 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Set the label for your activity to "tap_to_play" when paused -->
-            <meta-data
-                android:name="android.app.activity.pauseLabel"
-                android:resource="@string/tap_to_play" />
         </activity>
     </application>
 
