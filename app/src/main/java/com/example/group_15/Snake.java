@@ -171,29 +171,42 @@ class Snake {
     }
 
     boolean detectDeath() {
-        // Has the snake died?
-        boolean dead = false;
+        boolean screenEdgeCollision = checkScreenEdgeCollision();
+        boolean selfCollision = checkSelfCollision();
 
-        // Hit any of the screen edges
-        if (segmentLocations.get(0).x == -1 ||
-                segmentLocations.get(0).x > mMoveRange.x ||
-                segmentLocations.get(0).y == -1 ||
-                segmentLocations.get(0).y > mMoveRange.y) {
+        return screenEdgeCollision || selfCollision;
+    }
 
-            dead = true;
-        }
+    private boolean checkScreenEdgeCollision() {
+        Point headLocation = segmentLocations.get(0);
 
-        // Eaten itself?
+        boolean leftEdgeDetection = headLocation.x == -1;
+        boolean rightEdgeDetection = headLocation.x > mMoveRange.x;
+        boolean topEdgeDetection = headLocation.y == -1;
+        boolean bottomEdgeDetection = headLocation.y > mMoveRange.y;
+
+        return leftEdgeDetection || rightEdgeDetection || topEdgeDetection || bottomEdgeDetection;
+    }
+
+    private boolean checkSelfCollision() {
+        Point headLocation = segmentLocations.get(0);
+
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
-            // Have any of the sections collided with the head
-            if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
-                    segmentLocations.get(0).y == segmentLocations.get(i).y) {
+            Point segmentLocation = segmentLocations.get(i);
 
-                dead = true;
+            if (headLocation.x == segmentLocation.x && headLocation.y == segmentLocation.y) {
+                return true; // Snake has collided with itself
             }
         }
-        return dead;
+
+        return false; // No self-collision
     }
+
+
+
+
+
+
 
     boolean checkDinner(Point l) {
         //if (snakeXs[0] == l.x && snakeYs[0] == l.y) {
