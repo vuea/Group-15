@@ -155,8 +155,10 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private void drawPausedText() {
         if (mPaused) {
             mPaint.setColor(Color.argb(255, 255, 255, 255));
-            mPaint.setTextSize(250);
-            mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
+            mPaint.setTextSize(50); mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
+            //mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
+            // A simple text with the interaction of the user and game
+            mCanvas.drawText("Tap to Play!", 1000, 500, mPaint);
         }
     }
 

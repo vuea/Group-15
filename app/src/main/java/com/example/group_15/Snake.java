@@ -27,7 +27,7 @@ class Snake {
     private int halfWayPoint;
 
     // For tracking movement Heading
-    private enum Heading {
+    public enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
 
@@ -42,7 +42,9 @@ class Snake {
 
     // A bitmap for the body
     private Bitmap mBitmapBody;
-
+    // Initialize snakeDrawer class
+    // logic of drawing the head of the snake
+    private snakeDrawer SnakeDrawer;
 
     Snake(Context context, Point mr, int ss) {
 
@@ -111,6 +113,10 @@ class Snake {
         // The halfway point across the screen in pixels
         // Used to detect which side of screen was pressed
         halfWayPoint = mr.x * ss / 2;
+
+        // Draws snake
+        this.SnakeDrawer = new snakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight, mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown, mBitmapBody);
+
     }
 
     // Get the snake ready for a new game
@@ -206,56 +212,8 @@ class Snake {
     }
 
     void draw(Canvas canvas, Paint paint) {
-
-        // Don't run this code if ArrayList has nothing in it
-        if (!segmentLocations.isEmpty()) {
-            // All the code from this method goes here
-            // Draw the head
-            switch (heading) {
-                case RIGHT:
-                    canvas.drawBitmap(mBitmapHeadRight,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-
-                case LEFT:
-                    canvas.drawBitmap(mBitmapHeadLeft,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-
-                case UP:
-                    canvas.drawBitmap(mBitmapHeadUp,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-
-                case DOWN:
-                    canvas.drawBitmap(mBitmapHeadDown,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-            }
-
-            // Draw the snake body one block at a time
-            for (int i = 1; i < segmentLocations.size(); i++) {
-                canvas.drawBitmap(mBitmapBody,
-                        segmentLocations.get(i).x
-                                * mSegmentSize,
-                        segmentLocations.get(i).y
-                                * mSegmentSize, paint);
-            }
-        }
+        SnakeDrawer.drawSnake(canvas, paint, heading);
     }
-
 
     // Handle changing direction
     void switchHeading(MotionEvent motionEvent) {

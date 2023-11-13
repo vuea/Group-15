@@ -21,6 +21,9 @@ class Apple {
 
     // An image to represent the apple
     private Bitmap mBitmapApple;
+    // Initialize appleDrawer class
+    // logic of drawing the apple
+    private appleDrawer AppleDrawer;
 
     /// Set up the apple in the constructor
     Apple(Context context, Point sr, int s){
@@ -37,6 +40,9 @@ class Apple {
 
         // Resize the bitmap
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
+
+        //Draws apple
+        this.AppleDrawer = new appleDrawer(location, s, mBitmapApple);
     }
 
     // This is called every time an apple is eaten
@@ -55,9 +61,6 @@ class Apple {
 
     // Draw the apple
     void draw(Canvas canvas, Paint paint){
-        canvas.drawBitmap(mBitmapApple,
-                location.x * mSize, location.y * mSize, paint);
-
+        AppleDrawer.drawApple(canvas, paint);
     }
-
 }
