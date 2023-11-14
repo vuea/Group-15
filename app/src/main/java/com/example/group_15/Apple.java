@@ -64,3 +64,4 @@ class Apple {
         AppleDrawer.drawApple(canvas, paint);
     }
 }
+

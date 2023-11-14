@@ -115,7 +115,8 @@ class Snake {
         halfWayPoint = mr.x * ss / 2;
 
         // Draws snake
-        this.SnakeDrawer = new snakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight, mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown, mBitmapBody);
+        this.SnakeDrawer = new snakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight,
+                mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown, mBitmapBody);
 
     }
 
@@ -147,24 +148,25 @@ class Snake {
 
         // Move the head in the appropriate heading
         // Get the existing head position
-        Point p = segmentLocations.get(0);
+        //renamed point p to point head for easy readability
+        Point head = segmentLocations.get(0);
 
         // Move it appropriately
         switch (heading) {
             case UP:
-                p.y--;
+                head.y--;
                 break;
 
             case RIGHT:
-                p.x++;
+                head.x++;
                 break;
 
             case DOWN:
-                p.y++;
+                head.y++;
                 break;
 
             case LEFT:
-                p.x--;
+                head.x--;
                 break;
         }
 
@@ -207,11 +209,12 @@ class Snake {
 
 
 
-
-    boolean checkDinner(Point l) {
-        //if (snakeXs[0] == l.x && snakeYs[0] == l.y) {
-        if (segmentLocations.get(0).x == l.x &&
-                segmentLocations.get(0).y == l.y) {
+    boolean checkDinner(Point location) {
+        //changed point l to point location
+        //if (snakeXs[0] == l.x && snakeY
+        // s[0] == l.y) {
+        if (segmentLocations.get(0).x == location.x &&
+                segmentLocations.get(0).y == location.y) {
 
             // Add a new Point to the list
             // located off-screen.
@@ -232,39 +235,47 @@ class Snake {
     void switchHeading(MotionEvent motionEvent) {
 
         // Is the tap on the right hand side?
+        //create separate private constructor for rotating right and rotating left
         if (motionEvent.getX() >= halfWayPoint) {
-            switch (heading) {
-                // Rotate right
-                case UP:
-                    heading = Heading.RIGHT;
-                    break;
-                case RIGHT:
-                    heading = Heading.DOWN;
-                    break;
-                case DOWN:
-                    heading = Heading.LEFT;
-                    break;
-                case LEFT:
-                    heading = Heading.UP;
-                    break;
-
-            }
-        } else {
-            // Rotate left
-            switch (heading) {
-                case UP:
-                    heading = Heading.LEFT;
-                    break;
-                case LEFT:
-                    heading = Heading.DOWN;
-                    break;
-                case DOWN:
-                    heading = Heading.RIGHT;
-                    break;
-                case RIGHT:
-                    heading = Heading.UP;
-                    break;
-            }
+            rotateRight();
+        }else {
+            rotateLeft();
         }
+    }
+
+            // Rotate right class
+            private void rotateRight(){
+            switch (heading) {
+                case UP:
+                    heading = Heading.RIGHT;
+                    break;
+                case RIGHT:
+                    heading = Heading.DOWN;
+                    break;
+                case DOWN:
+                    heading = Heading.LEFT;
+                    break;
+                case LEFT:
+                    heading = Heading.UP;
+                    break;
+            }
+    }
+            // Rotate left class
+        private void rotateLeft(){
+            switch (heading) {
+                case UP:
+                    heading = Heading.LEFT;
+                    break;
+                case LEFT:
+                    heading = Heading.DOWN;
+                    break;
+                case DOWN:
+                    heading = Heading.RIGHT;
+                    break;
+                case RIGHT:
+                    heading = Heading.UP;
+                    break;
+            }
+
     }
 }
