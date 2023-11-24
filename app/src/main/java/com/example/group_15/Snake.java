@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -25,6 +26,13 @@ class Snake {
     // Where is the centre of the screen
     // horizontally in pixels?
     private int halfWayPoint;
+
+
+
+
+    public void setHeading(Heading newHeading) {
+        heading = newHeading;
+    }
 
     // For tracking movement Heading
     public enum Heading {
@@ -117,6 +125,7 @@ class Snake {
         // Draws snake
         this.SnakeDrawer = new snakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight,
                 mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown, mBitmapBody);
+
 
     }
 
@@ -276,6 +285,30 @@ class Snake {
                     heading = Heading.UP;
                     break;
             }
+        }
 
+    public boolean onKeyEvent(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_UP:
+                    setHeading(Heading.UP);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    setHeading(Heading.DOWN);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    setHeading(Heading.LEFT);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    setHeading(Heading.RIGHT);
+                    return true;
+                default:
+                    break;
+            }
+        }
+        return false;
     }
+
+
+
 }

@@ -10,6 +10,7 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -156,9 +157,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (mPaused) {
             mPaint.setColor(Color.argb(255, 255, 255, 255));
             mPaint.setTextSize(50); mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
-            //mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
-            // A simple text with the interaction of the user and game
-            mCanvas.drawText("Tap to Play!", 1000, 500, mPaint);
+            mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
+
+
         }
     }
 
@@ -192,5 +193,29 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mPlaying = true;
         mThread = new Thread(this);
         mThread.start();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mPaused) {
+            return super.onKeyDown(keyCode, event);
+        }
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                mSnake.setHeading(Snake.Heading.UP);
+                return true;
+
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                mSnake.setHeading(Snake.Heading.DOWN);
+                return true;
+
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                mSnake.setHeading(Snake.Heading.LEFT);
+                return true;
+
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                mSnake.setHeading(Snake.Heading.RIGHT);
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
