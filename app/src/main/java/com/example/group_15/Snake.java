@@ -27,9 +27,11 @@ class Snake {
     // horizontally in pixels?
     private int halfWayPoint;
 
+    private Sound mSound;
 
-
-
+    public void setSound(Sound sound) {
+        mSound = sound;
+    }
     public void setHeading(Heading newHeading) {
         heading = newHeading;
     }
