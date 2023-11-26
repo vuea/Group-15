@@ -39,43 +39,15 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     private Snake mSnake;
     private Apple mApple;
-
+    private Sound mSound;
     public SnakeGame(Context context, Point size) {
         super(context);
-        initializeSoundPool(context);
+        mSound = new Sound(context);
+
         initializeGameObjects(context, size);
     }
 
-    private void initializeSoundPool(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
 
-            mSoundPool = new SoundPool.Builder()
-                    .setMaxStreams(5)
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-        } else {
-            mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        }
-
-        try {
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor descriptor;
-
-            descriptor = assetManager.openFd("get_apple.ogg");
-            mEatSoundID = mSoundPool.load(descriptor, 0);
-
-            descriptor = assetManager.openFd("snake_death.ogg");
-            mCrashSoundID = mSoundPool.load(descriptor, 0);
-
-        } catch (IOException e) {
-            // Handle the error
-            e.printStackTrace();
-        }
-    }
 
     private void initializeGameObjects(Context context, Point size) {
         int blockSize = size.x / NUM_BLOCKS_WIDE;
@@ -126,11 +98,11 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (mSnake.checkDinner(mApple.getLocation())) {
             mApple.spawn();
             mScore++;
-            mSoundPool.play(mEatSoundID, 1, 1, 0, 0, 1);
+            mSound.playEatSound();
         }
 
         if (mSnake.detectDeath()) {
-            mSoundPool.play(mCrashSoundID, 1, 1, 0, 0, 1);
+            mSound.playCrashSound();
             mPaused = true;
         }
     }
