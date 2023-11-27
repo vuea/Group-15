@@ -29,6 +29,10 @@ class Snake {
 
     private Sound mSound;
 
+    private static final double initialSpeed = 0.5;
+    public static final double  speedIncrement = 1;
+    private double mSpeed = initialSpeed;
+
     public void setSound(Sound sound) {
         mSound = sound;
     }
@@ -137,6 +141,8 @@ class Snake {
         // Reset the heading
         heading = Heading.RIGHT;
 
+        //reset speed
+        mSpeed = initialSpeed;
         // Delete the old contents of the ArrayList
         segmentLocations.clear();
 
@@ -146,41 +152,43 @@ class Snake {
 
 
     void move() {
-        // Move the body
-        // Start at the back and move it
-        // to the position of the segment in front of it
-        for (int i = segmentLocations.size() - 1; i > 0; i--) {
+        // Move the snake at the current speed
+        for (int i = 0; i < mSpeed; i++) {
+            // Move the body
+            // Start at the back and move it
+            // to the position of the segment in front of it
+            for (int j = segmentLocations.size() - 1; j > 0; j--) {
 
-            // Make it the same value as the next segment
-            // going forwards towards the head
-            segmentLocations.get(i).x = segmentLocations.get(i - 1).x;
-            segmentLocations.get(i).y = segmentLocations.get(i - 1).y;
+                // Make it the same value as the next segment
+                // going forwards towards the head
+                segmentLocations.get(j).x = segmentLocations.get(j - 1).x;
+                segmentLocations.get(j).y = segmentLocations.get(j - 1).y;
+            }
+
+            // Move the head in the appropriate heading
+            // Get the existing head position
+            // renamed point p to point head for easy readability
+            Point head = segmentLocations.get(0);
+
+            // Move it appropriately
+            switch (heading) {
+                case UP:
+                    head.y--;
+                    break;
+
+                case RIGHT:
+                    head.x++;
+                    break;
+
+                case DOWN:
+                    head.y++;
+                    break;
+
+                case LEFT:
+                    head.x--;
+                    break;
+            }
         }
-
-        // Move the head in the appropriate heading
-        // Get the existing head position
-        //renamed point p to point head for easy readability
-        Point head = segmentLocations.get(0);
-
-        // Move it appropriately
-        switch (heading) {
-            case UP:
-                head.y--;
-                break;
-
-            case RIGHT:
-                head.x++;
-                break;
-
-            case DOWN:
-                head.y++;
-                break;
-
-            case LEFT:
-                head.x--;
-                break;
-        }
-
     }
 
     boolean detectDeath() {
@@ -215,28 +223,21 @@ class Snake {
         return false; // No self-collision
     }
 
-
-
-
-
-
     boolean checkDinner(Point location) {
-        //changed point l to point location
-        //if (snakeXs[0] == l.x && snakeY
-        // s[0] == l.y) {
-        if (segmentLocations.get(0).x == location.x &&
-                segmentLocations.get(0).y == location.y) {
+        boolean ateDinner = false;
 
-            // Add a new Point to the list
-            // located off-screen.
-            // This is OK because on the next call to
-            // move it will take the position of
-            // the segment in front of it
+        if (segmentLocations.get(0).x == location.x && segmentLocations.get(0).y == location.y) {
             segmentLocations.add(new Point(-10, -10));
-            return true;
+            ateDinner = true;
         }
-        return false;
+
+        if (ateDinner) {
+            increaseSpeed();
+        }
+
+        return ateDinner;
     }
+
 
     void draw(Canvas canvas, Paint paint) {
         SnakeDrawer.drawSnake(canvas, paint, heading);
@@ -289,28 +290,10 @@ class Snake {
             }
         }
 
-    public boolean onKeyEvent(int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    setHeading(Heading.UP);
-                    return true;
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    setHeading(Heading.DOWN);
-                    return true;
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    setHeading(Heading.LEFT);
-                    return true;
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    setHeading(Heading.RIGHT);
-                    return true;
-                default:
-                    break;
-            }
-        }
-        return false;
-    }
 
+    private void increaseSpeed() {
+        mSpeed += speedIncrement;
+    }
 
 
 }
