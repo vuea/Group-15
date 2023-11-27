@@ -30,7 +30,7 @@ class Snake {
     private Sound mSound;
 
     private static final double initialSpeed = 0.5;
-    public static final double  speedIncrement = 1;
+    public static final double  speedIncrement = 0.5;
     private double mSpeed = initialSpeed;
 
     public void setSound(Sound sound) {
@@ -153,7 +153,7 @@ class Snake {
 
     void move() {
         // Move the snake at the current speed
-        for (int i = 0; i < mSpeed; i++) {
+        for (int i = 0; i < mSpeed/2; i++) {
             // Move the body
             // Start at the back and move it
             // to the position of the segment in front of it
