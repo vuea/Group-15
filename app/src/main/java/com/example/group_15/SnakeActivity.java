@@ -54,4 +54,6 @@ public class SnakeActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 }

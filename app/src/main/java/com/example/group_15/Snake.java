@@ -153,7 +153,7 @@ class Snake {
 
     void move() {
         // Move the snake at the current speed
-        for (int i = 0; i < mSpeed/4; i++) {
+        for (int i = 0; i < mSpeed/10; i++) {
             // Move the body
             // Start at the back and move it
             // to the position of the segment in front of it

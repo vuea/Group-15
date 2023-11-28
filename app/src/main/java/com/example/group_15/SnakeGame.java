@@ -40,14 +40,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private Snake mSnake;
     private Apple mApple;
     private Sound mSound;
+
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
 
         initializeGameObjects(context, size);
     }
-
-
 
     private void initializeGameObjects(Context context, Point size) {
         int blockSize = size.x / NUM_BLOCKS_WIDE;
@@ -130,8 +129,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mPaint.setColor(Color.argb(255, 255, 255, 255));
             mPaint.setTextSize(50); mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
             mCanvas.drawText(getResources().getString(R.string.tap_to_play), 200, 700, mPaint);
-
-
         }
     }
 
@@ -190,4 +187,5 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }
