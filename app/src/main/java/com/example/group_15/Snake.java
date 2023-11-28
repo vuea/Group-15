@@ -153,7 +153,7 @@ class Snake {
 
     void move() {
         // Move the snake at the current speed
-        for (int i = 0; i < mSpeed/2; i++) {
+        for (int i = 0; i < mSpeed/4; i++) {
             // Move the body
             // Start at the back and move it
             // to the position of the segment in front of it
@@ -226,9 +226,22 @@ class Snake {
     boolean checkDinner(Point location) {
         boolean ateDinner = false;
 
-        if (segmentLocations.get(0).x == location.x && segmentLocations.get(0).y == location.y) {
-            segmentLocations.add(new Point(-10, -10));
-            ateDinner = true;
+        for (int i = 0; i < segmentLocations.size(); i++) {
+            Point segment = segmentLocations.get(i);
+
+            // Predict snake's future positions and check for collision
+            for (double t = 0.0; t <= 1.0; t += 0.1) {
+                int predictedX = (int) (segment.x + t * (segment.x - location.x));
+                int predictedY = (int) (segment.y + t * (segment.y - location.y));
+
+                // Check if the predicted position intersects with the apple
+                if (predictedX == location.x && predictedY == location.y) {
+                    // Collision detected
+                    segmentLocations.add(new Point(-10, -10));
+                    ateDinner = true;
+                    break;
+                }
+            }
         }
 
         if (ateDinner) {
