@@ -25,6 +25,14 @@ class Apple {
     // logic of drawing the apple
     private appleDrawer AppleDrawer;
 
+    //private constructor
+Apple(Point spawnRange, int size, Bitmap bitmapApple, appleDrawer appleDrawer) {
+        mSpawnRange = spawnRange;
+        mSize = size;
+        mBitmapApple = bitmapApple;
+        AppleDrawer = appleDrawer;
+    }
+
     /// Set up the apple in the constructor
     Apple(Context context, Point sr, int s){
 
