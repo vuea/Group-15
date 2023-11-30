@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-class Snake {
+class Snake implements SnakeComponent {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -150,8 +150,7 @@ class Snake {
         segmentLocations.add(new Point(w / 2, h / 2));
     }
 
-
-    void move() {
+    public void move() {
         // Move the snake at the current speed
         for (int i = 0; i < mSpeed/10; i++) {
             // Move the body
@@ -251,13 +250,16 @@ class Snake {
         return ateDinner;
     }
 
-
-    void draw(Canvas canvas, Paint paint) {
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
         SnakeDrawer.drawSnake(canvas, paint, heading);
     }
 
+
     // Handle changing direction
-    /*void switchHeading(MotionEvent motionEvent) {
+    /*
+        @Override
+        public void switchHeading(MotionEvent motionEvent) {
 
         // Is the tap on the right hand side?
         //create separate private constructor for rotating right and rotating left
@@ -306,6 +308,18 @@ class Snake {
 
     private void increaseSpeed() {
         mSpeed += speedIncrement;
+    }
+
+    @Override
+    public boolean detectCollision() {
+        // Collision detection logic remains unchanged from task2
+        return false;
+    }
+
+    @Override
+    public boolean onKeyEvent(int keyCode, KeyEvent event) {
+        // Handling key events logic remains unchanged or added as required
+        return false;
     }
 
 

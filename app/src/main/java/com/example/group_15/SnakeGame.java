@@ -209,6 +209,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mThread.start();
     }
 
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mPaused) {
             return super.onKeyDown(keyCode, event);
