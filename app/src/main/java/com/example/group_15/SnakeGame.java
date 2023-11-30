@@ -1,4 +1,5 @@
 package com.example.group_15;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -10,10 +11,16 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
+
 
 import java.io.IOException;
 
@@ -40,12 +47,16 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private Snake mSnake;
     private Apple mApple;
     private Sound mSound;
-
+    private Button mPauseButton;
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
 
+        // Initialize game objects
         initializeGameObjects(context, size);
+
+        // Create the pause button
+        mPauseButton = new Button(context);
     }
 
     private void initializeGameObjects(Context context, Point size) {
@@ -186,6 +197,38 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    public boolean isPaused() {
+        return mPaused;
+    }
+
+    @Override
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
+
+        // Calculate position and size for the pause button
+        int buttonWidth = width / 4; // Adjust the width as needed
+        int buttonHeight = height / 10; // Adjust the height as needed
+        int buttonMargin = width / 20; // Adjust the margin as needed
+
+        // Set the layout parameters for the pause button
+        LayoutParams params = new LayoutParams(buttonWidth, buttonHeight);
+        params.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin);
+        mPauseButton.setLayoutParams(params);
+    }
+
+    private void pauseGame() {
+        mPaused = true;
+        // Perform actions needed when the game is paused
+        // For example, stop game updates, show paused message, etc.
+    }
+
+    private void resumeGame() {
+        mPaused = false;
+        // Perform actions needed when the game is resumed
+        // For example, resume game updates, hide paused message, etc.
     }
 
 }
