@@ -145,17 +145,15 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                if (mPaused) {
-                    mPaused = false;
-                    newGame();
-                    return true;
-                }
-                mSnake.switchHeading(motionEvent);
-                break;
-            default:
-                break;
+        // Check for key events
+        int action = motionEvent.getActionMasked();
+        if (action == MotionEvent.ACTION_UP) {
+            // Start the game when a touch is detected, assuming game is paused
+            if (mPaused) {
+                mPaused = false;
+                newGame();
+                return true;
+            }
         }
         return true;
     }
@@ -197,38 +195,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-
-    public boolean isPaused() {
-        return mPaused;
-    }
-
-    @Override
-    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-        super.onSizeChanged(width, height, oldWidth, oldHeight);
-
-        // Calculate position and size for the pause button
-        int buttonWidth = width / 4; // Adjust the width as needed
-        int buttonHeight = height / 10; // Adjust the height as needed
-        int buttonMargin = width / 20; // Adjust the margin as needed
-
-        // Set the layout parameters for the pause button
-        LayoutParams params = new LayoutParams(buttonWidth, buttonHeight);
-        params.setMargins(buttonMargin, buttonMargin, buttonMargin, buttonMargin);
-        mPauseButton.setLayoutParams(params);
-    }
-
-    private void pauseGame() {
-        mPaused = true;
-        // Perform actions needed when the game is paused
-        // For example, stop game updates, show paused message, etc.
-    }
-
-    private void resumeGame() {
-        mPaused = false;
-        // Perform actions needed when the game is resumed
-        // For example, resume game updates, hide paused message, etc.
     }
 
 }
