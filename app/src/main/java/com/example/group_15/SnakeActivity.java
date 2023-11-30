@@ -73,6 +73,8 @@ public class SnakeActivity extends Activity {
                 isGamePaused = !isGamePaused; // Toggle the game pause state
             }
         });
+
+
     }
 
     @Override
@@ -98,4 +100,11 @@ public class SnakeActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    public void setPauseButtonVisibility(int visibility) {
+        if (mPauseButton != null) {
+            mPauseButton.setVisibility(visibility);
+        }
+    }
+
 }

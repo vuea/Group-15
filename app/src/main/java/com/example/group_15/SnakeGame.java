@@ -48,6 +48,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private Apple mApple;
     private Sound mSound;
     private Button mPauseButton;
+
+    private boolean isGamePaused = false;
+
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
@@ -146,9 +149,16 @@ public class SnakeGame extends SurfaceView implements Runnable {
             float y = getHeight() / 2;
 
             mCanvas.drawText(customText, x, y, mPaint);
+
+            // Hide the pause button when the game is not started
+            setPauseButtonVisibility(View.INVISIBLE);
+        } else {
+            // Show the pause button when the game is started
+            setPauseButtonVisibility(View.VISIBLE);
         }
     }
 
+    //Click To Start Game Functionality
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         // Check for key events
@@ -163,6 +173,26 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
         return true;
     }
+
+    //Click Functionality To Move The Snake
+    /*
+     @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_UP:
+                if (mPaused) {
+                    mPaused = false;
+                    newGame();
+                    return true;
+                }
+                mSnake.switchHeading(motionEvent);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+     */
 
     public void pause() {
         mPlaying = false;
@@ -203,4 +233,15 @@ public class SnakeGame extends SurfaceView implements Runnable {
         return super.onKeyDown(keyCode, event);
     }
 
+    // Modify the setPauseButtonVisibility() method to update the button visibility on the UI thread
+    private void setPauseButtonVisibility(final int visibility) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (getContext() instanceof SnakeActivity) {
+                    ((SnakeActivity) getContext()).setPauseButtonVisibility(visibility);
+                }
+            }
+        });
+    }
 }

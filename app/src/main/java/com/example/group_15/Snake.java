@@ -257,7 +257,7 @@ class Snake {
     }
 
     // Handle changing direction
-    void switchHeading(MotionEvent motionEvent) {
+    /*void switchHeading(MotionEvent motionEvent) {
 
         // Is the tap on the right hand side?
         //create separate private constructor for rotating right and rotating left
@@ -266,7 +266,7 @@ class Snake {
         }else {
             rotateLeft();
         }
-    }
+    }*/
 
             // Rotate right class
             private void rotateRight(){
