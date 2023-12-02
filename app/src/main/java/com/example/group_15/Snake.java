@@ -11,7 +11,7 @@ import android.view.KeyEvent;
 
 import java.util.ArrayList;
 
-class Snake implements SnakeComponent {
+class Snake {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -221,7 +221,7 @@ class Snake implements SnakeComponent {
         return false; // No self-collision
     }
 
-    boolean checkDinner(Point location) {
+    boolean checkDinner(Point location, boolean isGoldenApple) {
         boolean ateDinner = false;
 
         for (int i = 0; i < segmentLocations.size(); i++) {
@@ -235,21 +235,23 @@ class Snake implements SnakeComponent {
                 // Check if the predicted position intersects with the apple
                 if (predictedX == location.x && predictedY == location.y) {
                     // Collision detected
-                    segmentLocations.add(new Point(-10, -10));
-                    ateDinner = true;
+                    if (isGoldenApple) {
+                        increaseSpeed();
+                        ateDinner = true;
+                    } else {
+                        // For regular apple, simply add a new segment to the snake
+                        segmentLocations.add(new Point(-10, -10));
+                        ateDinner = true;
+                    }
                     break;
                 }
             }
         }
 
-        if (ateDinner) {
-            increaseSpeed();
-        }
-
         return ateDinner;
     }
 
-    @Override
+
     public void draw(Canvas canvas, Paint paint) {
         SnakeDrawer.drawSnake(canvas, paint, heading);
     }
@@ -307,18 +309,6 @@ class Snake implements SnakeComponent {
 
     private void increaseSpeed() {
         mSpeed += speedIncrement;
-    }
-
-    @Override
-    public boolean detectCollision() {
-        // Collision detection logic remains unchanged from task2
-        return false;
-    }
-
-    @Override
-    public boolean onKeyEvent(int keyCode, KeyEvent event) {
-        // Handling key events logic remains unchanged or added as required
-        return false;
     }
 
 

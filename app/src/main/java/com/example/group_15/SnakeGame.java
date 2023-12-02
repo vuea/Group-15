@@ -111,17 +111,19 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void update() {
         mSnake.move();
 
-        if (mSnake.checkDinner(mApple.getLocation())) {
+        if (mSnake.checkDinner(mApple.getLocation(), false)) {
             mApple.spawn();
             mScore++;
             mSound.playEatSound();
         }
 
-        if (mSnake.checkDinner(mGoldenApple.getLocation())) {
+
+        if (mSnake.checkDinner(mGoldenApple.getLocation(), true)) {
             mGoldenApple.spawnGoldenApple();
             mScore++;
             mSound.playEatSound();
         }
+
 
         if (mSnake.detectDeath()) {
             mSound.playCrashSound();
