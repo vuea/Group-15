@@ -1,35 +1,39 @@
 package com.example.group_15;
-import android.content.Context;
 import android.view.View;
+import android.widget.Button;
 
-import androidx.appcompat.widget.AppCompatButton;
+import android.content.Context;
+import android.view.Gravity;
+import android.widget.FrameLayout;
 
-public class PauseButton extends AppCompatButton {
+public class PauseButton {
     private boolean isGamePaused = false;
-    private SnakeGame mSnakeGame;
 
-    public PauseButton(Context context, SnakeGame snakeGame) {
-        super(context);
-        mSnakeGame = snakeGame;
-        initializeButton();
+    private Button mPauseButton;
+
+    public Button createPauseButton(Context context) {
+        mPauseButton = new Button(context);
+        mPauseButton.setText("||");
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                100, // Set the width of the button (in pixels)
+                100  // Set the height of the button (in pixels)
+        );
+        params.setMargins(20, 20, 20, 20); // Adjust margins as needed
+        params.gravity = Gravity.TOP | Gravity.END; // Adjust gravity as needed
+        mPauseButton.setLayoutParams(params);
+
+        return mPauseButton;
     }
 
-    private void initializeButton() {
-        setText("||"); // Set initial text/icon for pause
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isGamePaused) {
-                    // If the game is paused, resume the game
-                    mSnakeGame.resume();
-                    setText("||"); // Change button text/icon as needed for pause
-                } else {
-                    // If the game is running, pause the game
-                    mSnakeGame.pause();
-                    setText("▶"); // Change button text/icon as needed for resume
-                }
-                isGamePaused = !isGamePaused; // Toggle the game pause state
-            }
-        });
+    public void togglePause(SnakeGame snakeGame) {
+        if (isGamePaused) {
+            snakeGame.resume();
+            mPauseButton.setText("||"); // Change button text/icon as needed for pause
+        } else {
+            snakeGame.pause();
+            mPauseButton.setText("▶"); // Change button text/icon as needed for resume
+        }
+        isGamePaused = !isGamePaused;
     }
 }

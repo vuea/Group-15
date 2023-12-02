@@ -66,10 +66,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private void initializeGameObjects(Context context, Point size) {
         int blockSize = size.x / NUM_BLOCKS_WIDE;
         mNumBlocksHigh = size.y / blockSize;
-
         mSurfaceHolder = getHolder();
         mPaint = new Paint();
-
         mApple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
         mGoldenApple = new GoldenApple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
         mSnake = new Snake(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
@@ -258,6 +256,4 @@ public class SnakeGame extends SurfaceView implements Runnable {
             }
         });
     }
-
-
 }

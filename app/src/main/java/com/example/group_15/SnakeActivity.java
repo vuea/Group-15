@@ -22,7 +22,8 @@ public class SnakeActivity extends Activity {
     private Button mPauseButton;
     private boolean isGameStarted = false;
     private boolean isGamePaused = false; // Flag to track if the game is paused
-    private long lastClickTime = 0; // Variable to track last click time
+
+    private PauseButton pauseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,22 +39,20 @@ public class SnakeActivity extends Activity {
         // Create an instance of SnakeGame class
         mSnakeGame = new SnakeGame(this, size);
 
-        // Create a new instance of PauseButton and pass the SnakeGame instance to it
-        PauseButton mPauseButton = new PauseButton(this, mSnakeGame);
 
-        //  Set layout parameters for the pause button (similar to your previous code)
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                100, // Set the width of the button (in pixels)
-                100  // Set the height of the button (in pixels)
-        );
-        params.setMargins(20, 20, 20, 20); // Adjust margins as needed
-        params.gravity = Gravity.TOP | Gravity.END; // Adjust gravity as needed
-        mPauseButton.setLayoutParams(params);
-
-        // Add the SnakeGame view and the pause button to the FrameLayout
+        pauseButton = new PauseButton();
+        mPauseButton = pauseButton.createPauseButton(this);
         layout.addView(mSnakeGame);
         layout.addView(mPauseButton);
+
         setContentView(layout);
+
+        mPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pauseButton.togglePause(mSnakeGame);
+            }
+        });
 
 
     }
