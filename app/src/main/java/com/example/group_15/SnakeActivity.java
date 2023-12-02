@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -37,42 +38,22 @@ public class SnakeActivity extends Activity {
         // Create an instance of SnakeGame class
         mSnakeGame = new SnakeGame(this, size);
 
-        // Create a pause button
-        mPauseButton = new Button(this);
-        mPauseButton.setText("||");
+        // Create a new instance of PauseButton and pass the SnakeGame instance to it
+        PauseButton mPauseButton = new PauseButton(this, mSnakeGame);
 
-        // Set layout parameters for the pause button
+        //  Set layout parameters for the pause button (similar to your previous code)
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 100, // Set the width of the button (in pixels)
                 100  // Set the height of the button (in pixels)
         );
         params.setMargins(20, 20, 20, 20); // Adjust margins as needed
-        params.gravity = android.view.Gravity.TOP | android.view.Gravity.END; // Adjust gravity as needed
+        params.gravity = Gravity.TOP | Gravity.END; // Adjust gravity as needed
         mPauseButton.setLayoutParams(params);
 
         // Add the SnakeGame view and the pause button to the FrameLayout
         layout.addView(mSnakeGame);
         layout.addView(mPauseButton);
-
         setContentView(layout);
-
-        // Set an OnClickListener for the pause button
-        mPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isGamePaused) {
-                    // If the game is paused, resume the game
-                    mSnakeGame.resume();
-                    mPauseButton.setText("||"); // Change button text/icon as needed for pause
-                } else {
-                    // If the game is running, pause the game
-                    mSnakeGame.pause();
-                    mPauseButton.setText("▶"); // Change button text/icon as needed for resume
-                }
-
-                isGamePaused = !isGamePaused; // Toggle the game pause state
-            }
-        });
 
 
     }
@@ -106,5 +87,6 @@ public class SnakeActivity extends Activity {
             mPauseButton.setVisibility(visibility);
         }
     }
+
 
 }

@@ -5,13 +5,16 @@ import android.graphics.Paint;
 import android.graphics.Point;
 
 
-public class appleDrawer {
+public class AppleDrawer {
 
     private Point location;
     private int size;
+
+
     private Bitmap bitmapApple;
 
-    public appleDrawer(Point location, int size, Bitmap bitmapApple) {
+
+    public AppleDrawer(Point location, int size, Bitmap bitmapApple) {
         this.location = location;
         this.size = size;
         this.bitmapApple = bitmapApple;
@@ -20,4 +23,5 @@ public class appleDrawer {
     public void drawApple(Canvas canvas, Paint paint) {
         canvas.drawBitmap(bitmapApple, location.x * size, location.y * size, paint);
     }
+
 }

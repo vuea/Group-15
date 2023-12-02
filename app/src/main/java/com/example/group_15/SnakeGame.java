@@ -46,6 +46,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     private Snake mSnake;
     private Apple mApple;
+    private GoldenApple mGoldenApple;
     private Sound mSound;
     private Button mPauseButton;
 
@@ -70,12 +71,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mPaint = new Paint();
 
         mApple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+        mGoldenApple = new GoldenApple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
         mSnake = new Snake(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
     }
 
     public void newGame() {
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
+        mGoldenApple.spawnGoldenApple();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
     }
@@ -114,6 +117,12 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mSound.playEatSound();
         }
 
+        if (mSnake.checkDinner(mGoldenApple.getLocation())) {
+            mGoldenApple.spawnGoldenApple();
+            mScore++;
+            mSound.playEatSound();
+        }
+
         if (mSnake.detectDeath()) {
             mSound.playCrashSound();
             mPaused = true;
@@ -125,7 +134,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mCanvas = mSurfaceHolder.lockCanvas();
             mCanvas.drawColor(Color.argb(255, 26, 128, 182));
             drawScore();
-            mApple.draw(mCanvas, mPaint);
+            mApple.drawApple(mCanvas, mPaint);
+            mGoldenApple.drawGoldenApple(mCanvas,mPaint);
             mSnake.draw(mCanvas, mPaint);
             drawPausedText();
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
@@ -246,4 +256,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             }
         });
     }
+
+
 }

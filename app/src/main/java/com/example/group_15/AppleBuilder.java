@@ -6,38 +6,44 @@ import android.graphics.Point;
 import android.content.Context;
 
 
-public class appleBuilder {
+public class AppleBuilder {
 
     private Point mSpawnRange;
     private int mSize;
     private Bitmap mBitmapApple;
-
-    private appleDrawer appleDrawer;
+    private Bitmap mBitmapGoldenApple;
+    private AppleDrawer appleDrawer;
     //builder class for spawn
-    public appleBuilder setSpawnRange(Point spawnRange) {
+    public AppleBuilder setSpawnRange(Point spawnRange) {
 
         this.mSpawnRange = spawnRange;
         return this;
     }
 
-    public appleBuilder setSize(int size) {
+    public AppleBuilder setSize(int size) {
         this.mSize = size;
         return this;
     }
 
-    public appleBuilder setBitmap(Context context) {
+    public AppleBuilder setBitmap(Context context) {
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, mSize, mSize, false);
+        mBitmapGoldenApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenapple);
+        mBitmapGoldenApple = Bitmap.createScaledBitmap(mBitmapGoldenApple, mSize, mSize, false);
         return this;
     }
 
 
-    public appleBuilder setAppleDrawer(appleDrawer appleDrawer) {
+    public AppleBuilder setAppleDrawer(AppleDrawer appleDrawer) {
         this.appleDrawer = appleDrawer;
         return this;
     }
     public Apple build() {
         return new Apple(mSpawnRange, mSize, mBitmapApple, appleDrawer);
+    }
+
+    public Apple buildGoldenApple() {
+        return new Apple(mSpawnRange, mSize, mBitmapGoldenApple, appleDrawer);
     }
 }
 

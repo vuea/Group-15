@@ -8,7 +8,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
@@ -58,7 +57,7 @@ class Snake implements SnakeComponent {
     private Bitmap mBitmapBody;
     // Initialize snakeDrawer class
     // logic of drawing the head of the snake
-    private snakeDrawer SnakeDrawer;
+    private com.example.group_15.SnakeDrawer SnakeDrawer;
 
     Snake(Context context, Point mr, int ss) {
 
@@ -129,7 +128,7 @@ class Snake implements SnakeComponent {
         halfWayPoint = mr.x * ss / 2;
 
         // Draws snake
-        this.SnakeDrawer = new snakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight,
+        this.SnakeDrawer = new SnakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight,
                 mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown, mBitmapBody);
 
 

@@ -9,13 +9,13 @@ import android.graphics.Paint;
 import android.graphics.Point;
 
 import java.util.ArrayList;
-public class snakeDrawer {
+public class SnakeDrawer {
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;
     private Bitmap mBitmapHeadRight, mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown;
     private Bitmap mBitmapBody;
 
-    public snakeDrawer(ArrayList<Point> segmentLocations, int segmentSize, Bitmap headRight, Bitmap headLeft, Bitmap headUp, Bitmap headDown, Bitmap body) {
+    public SnakeDrawer(ArrayList<Point> segmentLocations, int segmentSize, Bitmap headRight, Bitmap headLeft, Bitmap headUp, Bitmap headDown, Bitmap body) {
         this.segmentLocations = segmentLocations;
         this.mSegmentSize = segmentSize;
         this.mBitmapHeadRight = headRight;
