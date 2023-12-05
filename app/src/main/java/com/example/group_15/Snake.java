@@ -13,6 +13,9 @@ import java.util.ArrayList;
 
 class Snake {
 
+
+    private static final long SPEED_DURATION_MILLISECONDS = 10000; // Duration for speed increase in milliseconds (10 seconds)
+
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
 
@@ -29,8 +32,11 @@ class Snake {
     private Sound mSound;
 
     private static final double initialSpeed = 0.5;
-    public static final double  speedIncrement = 1;
+
     private double mSpeed = initialSpeed;
+    private boolean isSpeedIncreased; // Flag to track if speed is increased
+    private long speedIncreaseDuration; // Duration for speed increase in milliseconds
+    private long speedIncreaseStartTime;
 
     public void setSound(Sound sound) {
         mSound = sound;
@@ -130,6 +136,8 @@ class Snake {
         // Draws snake
         this.SnakeDrawer = new SnakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight,
                 mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown, mBitmapBody);
+
+        speedIncreaseDuration = SPEED_DURATION_MILLISECONDS;
 
 
     }
@@ -238,6 +246,7 @@ class Snake {
                     if (isGoldenApple) {
                         increaseSpeed();
                         ateDinner = true;
+                        speedIncreaseStartTime = System.currentTimeMillis(); // Record the time when speed was increased
                     } else {
                         // For regular apple, simply add a new segment to the snake
                         segmentLocations.add(new Point(-10, -10));
@@ -246,10 +255,15 @@ class Snake {
                     break;
                 }
             }
+
+            if (isSpeedIncreased && System.currentTimeMillis() - speedIncreaseStartTime >= speedIncreaseDuration) {
+                resetSpeed();
+            }
         }
 
         return ateDinner;
     }
+
 
 
     public void draw(Canvas canvas, Paint paint) {
@@ -271,46 +285,51 @@ class Snake {
         }
     }*/
 
-            // Rotate right class
-            private void rotateRight(){
-            switch (heading) {
-                case UP:
-                    heading = Heading.RIGHT;
-                    break;
-                case RIGHT:
-                    heading = Heading.DOWN;
-                    break;
-                case DOWN:
-                    heading = Heading.LEFT;
-                    break;
-                case LEFT:
-                    heading = Heading.UP;
-                    break;
-            }
-    }
-            // Rotate left class
-        private void rotateLeft(){
-            switch (heading) {
-                case UP:
-                    heading = Heading.LEFT;
-                    break;
-                case LEFT:
-                    heading = Heading.DOWN;
-                    break;
-                case DOWN:
-                    heading = Heading.RIGHT;
-                    break;
-                case RIGHT:
-                    heading = Heading.UP;
-                    break;
-            }
+    // Rotate right class
+    private void rotateRight(){
+        switch (heading) {
+            case UP:
+                heading = Heading.RIGHT;
+                break;
+            case RIGHT:
+                heading = Heading.DOWN;
+                break;
+            case DOWN:
+                heading = Heading.LEFT;
+                break;
+            case LEFT:
+                heading = Heading.UP;
+                break;
         }
-
+    }
+    // Rotate left class
+    private void rotateLeft(){
+        switch (heading) {
+            case UP:
+                heading = Heading.LEFT;
+                break;
+            case LEFT:
+                heading = Heading.DOWN;
+                break;
+            case DOWN:
+                heading = Heading.RIGHT;
+                break;
+            case RIGHT:
+                heading = Heading.UP;
+                break;
+        }
+    }
 
     private void increaseSpeed() {
         mSpeed = 1.5;
+        isSpeedIncreased = true;
+        speedIncreaseStartTime = System.currentTimeMillis(); // Record the time when speed was increased
     }
 
-
-
+    //whenever the speed duration goes out
+    //this method is called
+    private void resetSpeed() {
+        mSpeed = 1; // Resetting the speed to zero
+        isSpeedIncreased = false;
+    }
 }
