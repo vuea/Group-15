@@ -14,7 +14,7 @@ import java.util.ArrayList;
 class Snake {
 
 
-    private static final long SPEED_DURATION_MILLISECONDS = 5000; // Duration for speed increase in milliseconds (10 seconds)
+    private static final long SPEED_DURATION_MILLISECONDS = 2500; // Duration for speed increase in milliseconds (10 seconds)
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;

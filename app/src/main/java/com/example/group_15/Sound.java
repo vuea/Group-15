@@ -16,6 +16,8 @@ public class Sound implements ISound {
     private int mEatSoundID;
     private int mCrashSoundID;
 
+    private int mSpeedSoundID;
+
     public Sound(Context context) {
         initializeSoundPool(context);
     }
@@ -45,6 +47,9 @@ public class Sound implements ISound {
             descriptor = assetManager.openFd("snake_death.ogg");
             mCrashSoundID = mSoundPool.load(descriptor, 0);
 
+            descriptor = assetManager.openFd("speed-effect.ogg");
+            mSpeedSoundID = mSoundPool.load(descriptor, 0);
+
         } catch (IOException e) {
             // Handle the error
             e.printStackTrace();
@@ -61,11 +66,18 @@ public class Sound implements ISound {
         mSoundPool.play(mCrashSoundID, 1, 1, 0, 0, 1);
     }
 
+    public void playSpeedSound() {
+        mSoundPool.play(mSpeedSoundID, 1, 1, 0, 0, 1);
+    }
     public int getEatSoundID() {
         return mEatSoundID;
     }
 
     public int getCrashSoundID() {
         return mCrashSoundID;
+    }
+
+    public int getmSpeedSoundID() {
+        return mSpeedSoundID;
     }
 }

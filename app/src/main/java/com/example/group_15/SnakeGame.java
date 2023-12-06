@@ -53,7 +53,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private boolean isGamePaused = false;
     private long goldenAppleTimer = 0;
     private boolean isGoldenAppleConsumed = false;
-    private long goldenAppleSpawnInterval = 10000; // Time interval for golden apple spawn (in milliseconds)
+    private long goldenAppleSpawnInterval = 5000; // Time interval for golden apple spawn (in milliseconds)
     private int mBlockSize;
     private final int DESIRED_WIDTH = 1280;
     private final int DESIRED_HEIGHT = 720;
@@ -88,6 +88,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         // Check if the golden apple is not already spawned, then trigger the delayed spawn
         if (mGoldenApple.getLocation().x == -10) {
             startDelayedGoldenAppleSpawn();
+
         }
     }
 
@@ -127,14 +128,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
 
         if (mSnake.checkDinner(mGoldenApple.getLocation(), mGoldenApple)) {
-            mGoldenApple.setEaten(); // Mark the golden apple as eaten
-            mScore++;
-            mSound.playEatSound();
+            mGoldenApple.setEaten(); // Mark the golden apple as eate
         }
 
         if (mGoldenApple.isEaten()) {
-            // If the golden apple is eaten, manage its reappearance
+            // If the golden apple is eaten, manage its reappearance after a certain duration
             mGoldenApple.manageDisappearance();
+            mSound.playSpeedSound();
         }
 
         if (mSnake.detectDeath()) {
@@ -142,6 +142,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mPaused = true;
         }
     }
+
 
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {

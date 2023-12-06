@@ -33,6 +33,7 @@ public class GoldenApple {
     private long eatenTime;
 
     private boolean ignoreRegularAppleConsumption = false;
+    Sound mSound;
 
     GoldenApple(Context context, Point sr, int s){
 
@@ -101,7 +102,7 @@ public class GoldenApple {
                     // Reset the flag to allow regular apple consumption after the delay
                     ignoreRegularAppleConsumption = false;
                 }
-            }, 10000); // 10000 milliseconds = 10 seconds
+            }, 2000); // 10000 milliseconds = 10 seconds
         }
     }
     public void setEaten() {
@@ -115,7 +116,7 @@ public class GoldenApple {
     // Method to check if the golden apple is eaten and manage its reappearance after a certain duration
     public void manageDisappearance() {
         long currentTime = System.currentTimeMillis();
-        if (eaten && (currentTime - eatenTime >= 10000)) { // 10000 milliseconds = 10 seconds
+        if (eaten && (currentTime - eatenTime >= 0)) { // 10000 milliseconds = 10 seconds
             eaten = false; // Reset the eaten flag after the duration
             // Reappear the apple at a new location
             spawnGoldenApple();
@@ -127,7 +128,4 @@ public class GoldenApple {
         return eaten;
     }
 
-    public boolean ignoreRegularAppleConsumption() {
-        return ignoreRegularAppleConsumption;
-    }
 }
