@@ -14,7 +14,7 @@ import java.util.ArrayList;
 class Snake {
 
 
-    private static final long SPEED_DURATION_MILLISECONDS = 10000; // Duration for speed increase in milliseconds (10 seconds)
+    private static final long SPEED_DURATION_MILLISECONDS = 5000; // Duration for speed increase in milliseconds (10 seconds)
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -229,38 +229,26 @@ class Snake {
         return false; // No self-collision
     }
 
-    boolean checkDinner(Point location, boolean isGoldenApple) {
+    boolean checkDinner(Point location, GoldenApple goldenApple) {
         boolean ateDinner = false;
 
-        for (int i = 0; i < segmentLocations.size(); i++) {
-            Point segment = segmentLocations.get(i);
-
-            // Predict snake's future positions and check for collision
-            for (double t = 0.0; t <= 1.0; t += 0.1) {
-                int predictedX = (int) (segment.x + t * (segment.x - location.x));
-                int predictedY = (int) (segment.y + t * (segment.y - location.y));
-
-                // Check if the predicted position intersects with the apple
-                if (predictedX == location.x && predictedY == location.y) {
-                    // Collision detected
-                    if (isGoldenApple) {
-                        increaseSpeed();
-                        ateDinner = true;
-                        speedIncreaseStartTime = System.currentTimeMillis(); // Record the time when speed was increased
-                    } else {
-                        // For regular apple, simply add a new segment to the snake
-                        segmentLocations.add(new Point(-10, -10));
-                        ateDinner = true;
-                    }
-                    break;
+        // Check if the head collides with the apple
+        Point head = segmentLocations.get(0);
+        if (head.equals(location)) {
+            if (goldenApple.getLocation().equals(location)) {
+                increaseSpeed(); // Increase speed only when eating the golden apple
+                goldenApple.setEaten(); // Set the golden apple as eaten
+            } else {
+                segmentLocations.add(new Point(-10, -10)); // Add a new segment for a regular apple
+                ateDinner = true;
+                if (isSpeedIncreased) {
+                    resetSpeed(); // Reset speed if a regular apple is eaten after a golden apple
                 }
             }
+        }
 
-            if (isSpeedIncreased && System.currentTimeMillis() - speedIncreaseStartTime >= speedIncreaseDuration) {
-                resetSpeed();
-            }
-
-
+        if (isSpeedIncreased && System.currentTimeMillis() - speedIncreaseStartTime >= speedIncreaseDuration) {
+            resetSpeed(); // Reset speed if the speed increase duration has elapsed
         }
 
         return ateDinner;

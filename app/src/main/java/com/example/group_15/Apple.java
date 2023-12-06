@@ -62,20 +62,28 @@ class Apple {
     }
 
     // This is called every time an apple is eaten
-    void spawn(){
+    void spawn(GoldenApple goldenApple) {
         // Calculate the center of the grid
-        int centerX = mSpawnRange.x / 2;
+        int centerX = mSpawnRange.x / 4;
         int centerY = mSpawnRange.y / 2;
 
         // Define a range around the center to spawn the apple
-        int rangeX = mSpawnRange.x /2; // You can adjust the range as needed
-        int rangeY = mSpawnRange.y /2; // You can adjust the range as needed
+        int rangeX = mSpawnRange.x / 2; // Adjust the range as needed
+        int rangeY = mSpawnRange.y / 4; // Adjust the range as needed
 
-        // Choose random values within the defined range around the center
         Random random = new Random();
-        location.x = random.nextInt(rangeX) + (centerX - rangeX / 2);
-        location.y = random.nextInt(rangeY) + (centerY - rangeY / 2);
+        boolean isOverlapping = true;
+
+        while (isOverlapping) {
+            // Generate random positions around the center of the grid
+            location.x = random.nextInt(rangeX) + (centerX - rangeX / 2);
+            location.y = random.nextInt(rangeY) + (centerY - rangeY / 2);
+
+            // Check if the regular apple's location overlaps with the golden apple's location
+            isOverlapping = (goldenApple.getLocation().x == location.x && goldenApple.getLocation().y == location.y);
+        }
     }
+
 
 
     // Let SnakeGame know where the apple is

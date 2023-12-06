@@ -32,6 +32,8 @@ public class GoldenApple {
     private boolean eaten;
     private long eatenTime;
 
+    private boolean ignoreRegularAppleConsumption = false;
+
     GoldenApple(Context context, Point sr, int s){
 
         // Make a note of the passed in spawn range
@@ -55,14 +57,28 @@ public class GoldenApple {
         int centerY = mSpawnRange.y / 2;
 
         // Define a range around the center to spawn the apple
-        int rangeX = mSpawnRange.x / 4; // You can adjust the range as needed
-        int rangeY = mSpawnRange.y / 4; // You can adjust the range as needed
+        int rangeX = mSpawnRange.x / 4; // Adjust the range as needed
+        int rangeY = mSpawnRange.y / 2; // Adjust the range as needed
 
-        // Choose random values within the defined range around the center
         Random random = new Random();
-        location.x = random.nextInt(rangeX) + (centerX - rangeX / 2);
-        location.y = random.nextInt(rangeY) + (centerY - rangeY / 2);
+        boolean isOverlapping = true;
+
+        // Keep generating random positions until it's not the same as the previous location
+        while (isOverlapping) {
+            int newLocationX = random.nextInt(rangeX) + (centerX - rangeX / 2);
+            int newLocationY = random.nextInt(rangeY) + (centerY - rangeY / 2);
+
+            // Check if the new location is different from the previous one
+            isOverlapping = (location.x == newLocationX && location.y == newLocationY);
+
+            // If it's not the same location, update the golden apple's location
+            if (!isOverlapping) {
+                location.x = newLocationX;
+                location.y = newLocationY;
+            }
+        }
     }
+
     Point getLocation(){
         return location;
     }
@@ -74,16 +90,20 @@ public class GoldenApple {
     void spawnGoldenAppleWithDelay() {
         if (!isSpawnDelayed) {
             isSpawnDelayed = true;
+            // Set the flag to ignore regular apple consumption during the delay
+            ignoreRegularAppleConsumption = true;
+
             spawnHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     spawnGoldenApple();
                     isSpawnDelayed = false; // Reset the delay flag after spawning
+                    // Reset the flag to allow regular apple consumption after the delay
+                    ignoreRegularAppleConsumption = false;
                 }
             }, 10000); // 10000 milliseconds = 10 seconds
         }
     }
-
     public void setEaten() {
         eaten = true;
         eatenTime = System.currentTimeMillis();
@@ -105,5 +125,9 @@ public class GoldenApple {
     // Method to check if the golden apple is eaten
     public boolean isEaten() {
         return eaten;
+    }
+
+    public boolean ignoreRegularAppleConsumption() {
+        return ignoreRegularAppleConsumption;
     }
 }

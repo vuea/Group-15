@@ -54,10 +54,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private long goldenAppleTimer = 0;
     private boolean isGoldenAppleConsumed = false;
     private long goldenAppleSpawnInterval = 10000; // Time interval for golden apple spawn (in milliseconds)
+    private int mBlockSize;
+    private final int DESIRED_WIDTH = 1280;
+    private final int DESIRED_HEIGHT = 720;
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
-
+        mBlockSize = DESIRED_WIDTH / NUM_BLOCKS_WIDE;
+        mNumBlocksHigh = DESIRED_HEIGHT / mBlockSize;
         // Initialize game objects
         initializeGameObjects(context, size);
 
@@ -77,7 +81,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void newGame() {
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-        mApple.spawn();
+        mApple.spawn(mGoldenApple);
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
 
@@ -116,13 +120,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void update() {
         mSnake.move();
 
-        if (mSnake.checkDinner(mApple.getLocation(), false)) {
-            mApple.spawn();
+        if (mSnake.checkDinner(mApple.getLocation(), mGoldenApple)) {
+            mApple.spawn(mGoldenApple);
             mScore++;
             mSound.playEatSound();
         }
 
-        if (mSnake.checkDinner(mGoldenApple.getLocation(), true)) {
+        if (mSnake.checkDinner(mGoldenApple.getLocation(), mGoldenApple)) {
             mGoldenApple.setEaten(); // Mark the golden apple as eaten
             mScore++;
             mSound.playEatSound();
@@ -136,11 +140,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (mSnake.detectDeath()) {
             mSound.playCrashSound();
             mPaused = true;
-        }
-
-        // Check if the golden apple is consumed and initiate delayed spawn
-        if (mGoldenApple.isEaten()) {
-            startDelayedGoldenAppleSpawn();
         }
     }
 
