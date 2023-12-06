@@ -63,7 +63,7 @@ class Snake {
     private Bitmap mBitmapBody;
     // Initialize snakeDrawer class
     // logic of drawing the head of the snake
-    private com.example.group_15.SnakeDrawer SnakeDrawer;
+    private SnakeDrawer SnakeDrawer;
 
     Snake(Context context, Point mr, int ss) {
 
@@ -259,6 +259,8 @@ class Snake {
             if (isSpeedIncreased && System.currentTimeMillis() - speedIncreaseStartTime >= speedIncreaseDuration) {
                 resetSpeed();
             }
+
+
         }
 
         return ateDinner;
@@ -332,4 +334,5 @@ class Snake {
         mSpeed = 1; // Resetting the speed to zero
         isSpeedIncreased = false;
     }
+
 }

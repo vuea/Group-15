@@ -51,7 +51,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private Button mPauseButton;
 
     private boolean isGamePaused = false;
-
+    private long goldenAppleTimer = 0;
+    private boolean isGoldenAppleConsumed = false;
+    private long goldenAppleSpawnInterval = 10000; // Time interval for golden apple spawn (in milliseconds)
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
@@ -76,10 +78,15 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void newGame() {
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
-        mGoldenApple.spawnGoldenApple();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
+
+        // Check if the golden apple is not already spawned, then trigger the delayed spawn
+        if (mGoldenApple.getLocation().x == -10) {
+            startDelayedGoldenAppleSpawn();
+        }
     }
+
 
     @Override
     public void run() {
@@ -115,17 +122,25 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mSound.playEatSound();
         }
 
-
         if (mSnake.checkDinner(mGoldenApple.getLocation(), true)) {
-            mGoldenApple.spawnGoldenApple();
+            mGoldenApple.setEaten(); // Mark the golden apple as eaten
             mScore++;
             mSound.playEatSound();
         }
 
+        if (mGoldenApple.isEaten()) {
+            // If the golden apple is eaten, manage its reappearance
+            mGoldenApple.manageDisappearance();
+        }
 
         if (mSnake.detectDeath()) {
             mSound.playCrashSound();
             mPaused = true;
+        }
+
+        // Check if the golden apple is consumed and initiate delayed spawn
+        if (mGoldenApple.isEaten()) {
+            startDelayedGoldenAppleSpawn();
         }
     }
 
@@ -256,4 +271,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
             }
         });
     }
+
+    public void startDelayedGoldenAppleSpawn() {
+        mGoldenApple.spawnGoldenAppleWithDelay();
+    }
+
 }

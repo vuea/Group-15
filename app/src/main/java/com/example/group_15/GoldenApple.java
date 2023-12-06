@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.os.Handler;
 
 import java.util.Random;
 
@@ -25,14 +26,11 @@ public class GoldenApple {
     // logic of drawing the apple
     private GoldenAppleDrawer GoldenAppleDrawer;
 
+    private Handler spawnHandler;
+    private boolean isSpawnDelayed;
 
-
-    GoldenApple(Point spawnRange, int size, Bitmap BitmapGoldenApple, GoldenAppleDrawer goldenAppleDrawer) {
-        mSpawnRange = spawnRange;
-        mSize = size;
-        mBitmapGoldenApple = BitmapGoldenApple;
-        GoldenAppleDrawer = goldenAppleDrawer;
-    }
+    private boolean eaten;
+    private long eatenTime;
 
     GoldenApple(Context context, Point sr, int s){
 
@@ -47,6 +45,8 @@ public class GoldenApple {
         mBitmapGoldenApple = Bitmap.createScaledBitmap(mBitmapGoldenApple, s, s, false);
         //Draws apple
         this.GoldenAppleDrawer = new GoldenAppleDrawer(location, s, mBitmapGoldenApple);
+        spawnHandler = new Handler();
+        isSpawnDelayed = false;
     }
 
     void spawnGoldenApple() {
@@ -71,4 +71,39 @@ public class GoldenApple {
         GoldenAppleDrawer.drawGoldenApple(canvas, paint);
     }
 
+    void spawnGoldenAppleWithDelay() {
+        if (!isSpawnDelayed) {
+            isSpawnDelayed = true;
+            spawnHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    spawnGoldenApple();
+                    isSpawnDelayed = false; // Reset the delay flag after spawning
+                }
+            }, 10000); // 10000 milliseconds = 10 seconds
+        }
+    }
+
+    public void setEaten() {
+        eaten = true;
+        eatenTime = System.currentTimeMillis();
+        // Hide the apple when eaten
+        location.x = -10;
+        location.y = -10;
+    }
+
+    // Method to check if the golden apple is eaten and manage its reappearance after a certain duration
+    public void manageDisappearance() {
+        long currentTime = System.currentTimeMillis();
+        if (eaten && (currentTime - eatenTime >= 10000)) { // 10000 milliseconds = 10 seconds
+            eaten = false; // Reset the eaten flag after the duration
+            // Reappear the apple at a new location
+            spawnGoldenApple();
+        }
+    }
+
+    // Method to check if the golden apple is eaten
+    public boolean isEaten() {
+        return eaten;
+    }
 }
