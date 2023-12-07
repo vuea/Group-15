@@ -64,12 +64,12 @@ class Apple {
     // This is called every time an apple is eaten
     void spawn(GoldenApple goldenApple) {
         // Calculate the center of the grid
-        int centerX = mSpawnRange.x / 4;
+        int centerX = mSpawnRange.x / 2;
         int centerY = mSpawnRange.y / 2;
 
         // Define a range around the center to spawn the apple
         int rangeX = mSpawnRange.x / 2; // Adjust the range as needed
-        int rangeY = mSpawnRange.y / 4; // Adjust the range as needed
+        int rangeY = mSpawnRange.y / 2; // Adjust the range as needed
 
         Random random = new Random();
         boolean isOverlapping = true;
@@ -96,6 +96,7 @@ class Apple {
     void drawApple(Canvas canvas, Paint paint){
         AppleDrawer.drawApple(canvas, paint);
     }
+
 
 }
 

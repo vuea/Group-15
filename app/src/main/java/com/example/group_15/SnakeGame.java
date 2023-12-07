@@ -111,7 +111,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public boolean updateRequired() {
         final long TARGET_FPS = 10;
-        final long MILLIS_PER_SECOND = 1000;
+        final long MILLIS_PER_SECOND = 1200;
 
         if (mNextFrameTime <= System.currentTimeMillis()) {
             mNextFrameTime = System.currentTimeMillis() + MILLIS_PER_SECOND / TARGET_FPS;
@@ -123,6 +123,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void update() {
         mSnake.move();
+        final long SLOWER_DELAY_MS = 150;
 
         if (mSnake.checkDinner(mApple.getLocation(), mGoldenApple)) {
             mApple.spawn(mGoldenApple);
@@ -157,13 +158,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mGoldenApple.drawGoldenApple(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
             drawPausedText();
-
-            // Draw the current score
-            drawScore(mCanvas, mPaint);
-
-            // Draw the highest score
             drawHighestScore(mCanvas, mPaint);
-
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
@@ -302,10 +297,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         canvas.drawText(highestScoreText, x, y, paint);
     }
 
-    private void drawScore(Canvas canvas, Paint paint) {
-        // Existing drawScore() method code...
-    }
-
     // Method to retrieve the highest score
     public int getHighestScore() {
         return highestScore;
@@ -319,18 +310,16 @@ public class SnakeGame extends SurfaceView implements Runnable {
     }
 
     // Inside the SnakeGame class or where the game session ends (e.g., game-over conditions)
-// Inside the SnakeGame class or where the game session ends (e.g., game-over conditions)
+
     public void gameOver() {
         // Assuming mScore holds the current game score
         if (mScore > mHighestScore) {
             mHighestScore = mScore; // Update the highest score if the current score is higher
         }
-
-        // Other game-over logic...
-
-        // Call the method to update the highest score in the UI
         updateHighestScore(mScore);
     }
 
-
+    public void setSnakeDirection(Snake.Heading newHeading) {
+        mSnake.setHeading(newHeading);
+    }
 }

@@ -22,7 +22,6 @@ public class PauseButton {
         params.setMargins(20, 20, 20, 20); // Adjust margins as needed
         params.gravity = Gravity.TOP | Gravity.END; // Adjust gravity as needed
         mPauseButton.setLayoutParams(params);
-
         return mPauseButton;
     }
 

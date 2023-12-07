@@ -58,7 +58,7 @@ public class GoldenApple {
         int centerY = mSpawnRange.y / 2;
 
         // Define a range around the center to spawn the apple
-        int rangeX = mSpawnRange.x / 4; // Adjust the range as needed
+        int rangeX = mSpawnRange.x / 2; // Adjust the range as needed
         int rangeY = mSpawnRange.y / 2; // Adjust the range as needed
 
         Random random = new Random();
