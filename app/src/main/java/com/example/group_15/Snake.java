@@ -176,26 +176,35 @@ class Snake {
             // renamed point p to point head for easy readability
             Point head = segmentLocations.get(0);
 
+            // Determine the new position if the snake continues in its current direction
+            Point newHead = new Point(head);
+
             // Move it appropriately
             switch (heading) {
                 case UP:
-                    head.y--;
+                    newHead.y--;
                     break;
 
                 case RIGHT:
-                    head.x++;
+                    newHead.x++;
                     break;
 
                 case DOWN:
-                    head.y++;
+                    newHead.y++;
                     break;
 
                 case LEFT:
-                    head.x--;
+                    newHead.x--;
                     break;
             }
+
+            // Update the head position if the movement is allowed
+            head.x = newHead.x;
+            head.y = newHead.y;
         }
     }
+
+
 
     boolean detectDeath() {
         boolean screenEdgeCollision = checkScreenEdgeCollision();
