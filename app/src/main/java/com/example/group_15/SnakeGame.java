@@ -57,6 +57,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private int mBlockSize;
     private final int DESIRED_WIDTH = 1280;
     private final int DESIRED_HEIGHT = 720;
+    private int highestScore = 0; // Variable to store the highest score
+    private int mHighestScore = 0; // Variable to store the highest score
+
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
@@ -140,6 +143,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (mSnake.detectDeath()) {
             mSound.playCrashSound();
             mPaused = true;
+            gameOver();
         }
     }
 
@@ -150,9 +154,16 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mCanvas.drawColor(Color.argb(255, 26, 128, 182));
             drawScore();
             mApple.drawApple(mCanvas, mPaint);
-            mGoldenApple.drawGoldenApple(mCanvas,mPaint);
+            mGoldenApple.drawGoldenApple(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
             drawPausedText();
+
+            // Draw the current score
+            drawScore(mCanvas, mPaint);
+
+            // Draw the highest score
+            drawHighestScore(mCanvas, mPaint);
+
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
@@ -275,5 +286,51 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void startDelayedGoldenAppleSpawn() {
         mGoldenApple.spawnGoldenAppleWithDelay();
     }
+
+    private void drawHighestScore(Canvas canvas, Paint paint) {
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(40); // Set the text size to 40 (you can adjust this value as needed)
+
+        String highestScoreText = "Highest Score: " + mHighestScore;
+        float textWidth = paint.measureText(highestScoreText);
+        float x = (getWidth() - textWidth) / 2; // Center x-coordinate
+
+        // Calculate y-coordinate for top center positioning
+        float y = paint.getTextSize(); // Start at the text size (to add a buffer space, you can modify this value)
+
+        // Draw the highest score text on the canvas
+        canvas.drawText(highestScoreText, x, y, paint);
+    }
+
+    private void drawScore(Canvas canvas, Paint paint) {
+        // Existing drawScore() method code...
+    }
+
+    // Method to retrieve the highest score
+    public int getHighestScore() {
+        return highestScore;
+    }
+
+    // Method to update the highest score
+    public void updateHighestScore(int currentScore) {
+        if (currentScore > mHighestScore) {
+            mHighestScore = currentScore;
+        }
+    }
+
+    // Inside the SnakeGame class or where the game session ends (e.g., game-over conditions)
+// Inside the SnakeGame class or where the game session ends (e.g., game-over conditions)
+    public void gameOver() {
+        // Assuming mScore holds the current game score
+        if (mScore > mHighestScore) {
+            mHighestScore = mScore; // Update the highest score if the current score is higher
+        }
+
+        // Other game-over logic...
+
+        // Call the method to update the highest score in the UI
+        updateHighestScore(mScore);
+    }
+
 
 }
