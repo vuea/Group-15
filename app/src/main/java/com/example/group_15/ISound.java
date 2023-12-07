@@ -5,7 +5,4 @@ public interface ISound {
     void playSpeedSound();
     void playBackgroundMusic();
     void stopBackgroundMusic();
-
-
-
 }

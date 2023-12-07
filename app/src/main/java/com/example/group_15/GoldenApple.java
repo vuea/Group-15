@@ -7,33 +7,26 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Handler;
-
 import java.util.Random;
 
 public class GoldenApple {
     // The location of the apple on the grid
     // Not in pixels
     private Point location = new Point();
-
     // The range of values we can choose from
     // to spawn an apple
     private Point mSpawnRange;
     private int mSize;
-
     // An image to represent the apple
     private Bitmap mBitmapGoldenApple;
     // Initialize appleDrawer class
     // logic of drawing the apple
     private GoldenAppleDrawer GoldenAppleDrawer;
-
     private Handler spawnHandler;
     private boolean isSpawnDelayed;
-
     private boolean eaten;
     private long eatenTime;
-
     private boolean ignoreRegularAppleConsumption = false;
-    Sound mSound;
 
     GoldenApple(Context context, Point sr, int s){
 
@@ -102,7 +95,7 @@ public class GoldenApple {
                     // Reset the flag to allow regular apple consumption after the delay
                     ignoreRegularAppleConsumption = false;
                 }
-            }, 2000); // 10000 milliseconds = 10 seconds
+            }, 2000); //How long the delay?
         }
     }
     public void setEaten() {
@@ -127,5 +120,4 @@ public class GoldenApple {
     public boolean isEaten() {
         return eaten;
     }
-
 }

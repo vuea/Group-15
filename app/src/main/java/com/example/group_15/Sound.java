@@ -7,12 +7,9 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
-import android.util.Log;
-
 import java.io.IOException;
 
 public class Sound implements ISound {
-
     private SoundPool mSoundPool;
     private int mEatSoundID;
     private int mCrashSoundID;
@@ -84,10 +81,6 @@ public class Sound implements ISound {
         mSoundPool.stop(mBackgroundSoundID);
     }
 
-
-
-
-
     public int getEatSoundID() {
         return mEatSoundID;
     }
@@ -103,5 +96,4 @@ public class Sound implements ISound {
     public int getBackgroundMusic() {
         return mBackgroundSoundID;
     }
-
 }

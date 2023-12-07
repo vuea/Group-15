@@ -7,13 +7,9 @@ import android.view.MotionEvent;
 
 public interface SnakeComponent {
     void move();
-
     boolean detectCollision();
-
     void draw(Canvas canvas, Paint paint);
-
     //Not using it since we are using the arrow key bindings
     //void switchHeading(MotionEvent motionEvent);
-
     boolean onKeyEvent(int keyCode, KeyEvent event);
 }

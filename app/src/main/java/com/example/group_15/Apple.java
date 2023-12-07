@@ -9,26 +9,20 @@ import android.graphics.Point;
 import java.util.Random;
 
 class Apple {
-
     // The location of the apple on the grid
-    // Not in pixels
     private Point location = new Point();
-
     // The range of values we can choose from
     // to spawn an apple
     private Point mSpawnRange;
     private int mSize;
-
     // An image to represent the apple
     private Bitmap mBitmapApple;
     // Initialize appleDrawer class
     // logic of drawing the apple
     private AppleDrawer AppleDrawer;
-
     private Bitmap mBitmapGoldenApple;
 
-
-    //private constructor
+    //Constructor Used In Apple Builder
     Apple(Point spawnRange, int size, Bitmap bitmapApple, AppleDrawer appleDrawer) {
         mSpawnRange = spawnRange;
         mSize = size;
@@ -39,7 +33,6 @@ class Apple {
 
     /// Set up the apple in the constructor
     Apple(Context context, Point sr, int s){
-
         // Make a note of the passed in spawn range
         mSpawnRange = sr;
         // Make a note of the size of an apple
@@ -57,8 +50,6 @@ class Apple {
         mBitmapGoldenApple = Bitmap.createScaledBitmap(mBitmapGoldenApple, s, s, false);
         //Draws apple
         this.AppleDrawer = new AppleDrawer(location, s, mBitmapApple);
-
-
     }
 
     // This is called every time an apple is eaten
@@ -66,28 +57,21 @@ class Apple {
         // Calculate the center of the grid
         int centerX = mSpawnRange.x / 2;
         int centerY = mSpawnRange.y / 2;
-
         // Define a range around the center to spawn the apple
         int rangeX = mSpawnRange.x / 2; // Adjust the range as needed
         int rangeY = mSpawnRange.y / 2; // Adjust the range as needed
-
         Random random = new Random();
         boolean isOverlapping = true;
-
         while (isOverlapping) {
             // Generate random positions around the center of the grid
             location.x = random.nextInt(rangeX) + (centerX - rangeX / 2);
             location.y = random.nextInt(rangeY) + (centerY - rangeY / 2);
-
             // Check if the regular apple's location overlaps with the golden apple's location
             isOverlapping = (goldenApple.getLocation().x == location.x && goldenApple.getLocation().y == location.y);
         }
     }
 
-
-
     // Let SnakeGame know where the apple is
-    // SnakeGame can share this with the snake
     Point getLocation(){
         return location;
     }
@@ -96,7 +80,5 @@ class Apple {
     void drawApple(Canvas canvas, Paint paint){
         AppleDrawer.drawApple(canvas, paint);
     }
-
-
 }
 

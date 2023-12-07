@@ -1,16 +1,15 @@
 package com.example.group_15;
-import android.view.View;
 import android.widget.Button;
-
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
 public class PauseButton {
     private boolean isGamePaused = false;
-
     private Button mPauseButton;
 
+    //Builds the half of the frontend/design
+    //Pause Button
     public Button createPauseButton(Context context) {
         mPauseButton = new Button(context);
         mPauseButton.setText("||");
@@ -25,6 +24,8 @@ public class PauseButton {
         return mPauseButton;
     }
 
+    //Backend of the button
+    //Calls the class SnakeGame for resume and pause when toggled
     public void togglePause(SnakeGame snakeGame) {
         if (isGamePaused) {
             snakeGame.resume();

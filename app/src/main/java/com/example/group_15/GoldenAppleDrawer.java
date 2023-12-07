@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 
 public class GoldenAppleDrawer {
-
     private Point location;
     private int size;
     private Bitmap bitmapGoldenApple;

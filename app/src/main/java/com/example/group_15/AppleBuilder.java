@@ -5,9 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.content.Context;
 
-
 public class AppleBuilder {
-
     private Point mSpawnRange;
     private int mSize;
     private Bitmap mBitmapApple;
@@ -33,17 +31,13 @@ public class AppleBuilder {
         return this;
     }
 
-
     public AppleBuilder setAppleDrawer(AppleDrawer appleDrawer) {
         this.appleDrawer = appleDrawer;
         return this;
     }
+
     public Apple build() {
         return new Apple(mSpawnRange, mSize, mBitmapApple, appleDrawer);
-    }
-
-    public Apple buildGoldenApple() {
-        return new Apple(mSpawnRange, mSize, mBitmapGoldenApple, appleDrawer);
     }
 }
 

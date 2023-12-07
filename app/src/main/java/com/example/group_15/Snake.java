@@ -7,36 +7,31 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.view.KeyEvent;
-
 import java.util.ArrayList;
 
 class Snake {
-
-
     private static final long SPEED_DURATION_MILLISECONDS = 2500; // Duration for speed increase in milliseconds (10 seconds)
-
-    // The location in the grid of all the segments
-    private ArrayList<Point> segmentLocations;
-
-    // How big is each segment of the snake?
-    private int mSegmentSize;
-
-    // How big is the entire grid
-    private Point mMoveRange;
-
-    // Where is the centre of the screen
-    // horizontally in pixels?
-    private int halfWayPoint;
-
+    private ArrayList<Point> segmentLocations; // The location in the grid of all the segments
+    private int mSegmentSize; // How big is each segment of the snake?
+    private Point mMoveRange; // How big is the entire grid
+    private int halfWayPoint; // Where is the centre of the screen
     private Sound mSound;
-
-    private static final double initialSpeed = 0.5;
-
-    private double mSpeed = initialSpeed;
+    private static final double initialSpeed = 0.5; // need this to reset speed
+    private double mSpeed; //eat golden apple gain speed
     private boolean isSpeedIncreased; // Flag to track if speed is increased
     private long speedIncreaseDuration; // Duration for speed increase in milliseconds
     private long speedIncreaseStartTime;
+    // For tracking movement Heading
+    // Start by heading to the right
+    private Heading heading = Heading.RIGHT;
+    // A bitmap for each direction the head can face
+    private Bitmap mBitmapHeadRight;
+    private Bitmap mBitmapHeadLeft;
+    private Bitmap mBitmapHeadUp;
+    private Bitmap mBitmapHeadDown;
+
+    private Bitmap mBitmapBody;
+    private SnakeDrawer SnakeDrawer;
 
     public void setSound(Sound sound) {
         mSound = sound;
@@ -44,47 +39,26 @@ class Snake {
     public void setHeading(Heading newHeading) {
         heading = newHeading;
     }
-
-    // For tracking movement Heading
+    //headings
     public enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
 
-    // Start by heading to the right
-    private Heading heading = Heading.RIGHT;
-
-    // A bitmap for each direction the head can face
-    private Bitmap mBitmapHeadRight;
-    private Bitmap mBitmapHeadLeft;
-    private Bitmap mBitmapHeadUp;
-    private Bitmap mBitmapHeadDown;
-
-    // A bitmap for the body
-    private Bitmap mBitmapBody;
-    // Initialize snakeDrawer class
-    // logic of drawing the head of the snake
-    private SnakeDrawer SnakeDrawer;
-
     Snake(Context context, Point mr, int ss) {
-
         // Initialize our ArrayList
         segmentLocations = new ArrayList<>();
-
         // Initialize the segment size and movement
         // range from the passed in parameters
         mSegmentSize = ss;
         mMoveRange = mr;
-
         // Create and scale the bitmaps
         mBitmapHeadRight = BitmapFactory
                 .decodeResource(context.getResources(),
                         R.drawable.head);
-
         // Create 3 more versions of the head for different headings
         mBitmapHeadLeft = BitmapFactory
                 .decodeResource(context.getResources(),
                         R.drawable.head);
-
         mBitmapHeadUp = BitmapFactory
                 .decodeResource(context.getResources(),
                         R.drawable.head);
@@ -92,54 +66,43 @@ class Snake {
         mBitmapHeadDown = BitmapFactory
                 .decodeResource(context.getResources(),
                         R.drawable.head);
-
         // Modify the bitmaps to face the snake head
         // in the correct direction
         mBitmapHeadRight = Bitmap
                 .createScaledBitmap(mBitmapHeadRight,
                         ss, ss, false);
-
         // A matrix for scaling
         Matrix matrix = new Matrix();
         matrix.preScale(-1, 1);
-
         mBitmapHeadLeft = Bitmap
                 .createBitmap(mBitmapHeadRight,
                         0, 0, ss, ss, matrix, true);
-
         // A matrix for rotating
         matrix.preRotate(-90);
         mBitmapHeadUp = Bitmap
                 .createBitmap(mBitmapHeadRight,
                         0, 0, ss, ss, matrix, true);
-
         // Matrix operations are cumulative
         // so rotate by 180 to face down
         matrix.preRotate(180);
         mBitmapHeadDown = Bitmap
                 .createBitmap(mBitmapHeadRight,
                         0, 0, ss, ss, matrix, true);
-
         // Create and scale the body
         mBitmapBody = BitmapFactory
                 .decodeResource(context.getResources(),
                         R.drawable.body);
-
         mBitmapBody = Bitmap
                 .createScaledBitmap(mBitmapBody,
                         ss, ss, false);
-
         // The halfway point across the screen in pixels
         // Used to detect which side of screen was pressed
         halfWayPoint = mr.x * ss / 2;
-
         // Draws snake
         this.SnakeDrawer = new SnakeDrawer(segmentLocations, mSegmentSize, mBitmapHeadRight,
                 mBitmapHeadLeft, mBitmapHeadUp, mBitmapHeadDown, mBitmapBody);
-
+        //Speed duration
         speedIncreaseDuration = SPEED_DURATION_MILLISECONDS;
-
-
     }
 
     // Get the snake ready for a new game
@@ -170,15 +133,12 @@ class Snake {
                 segmentLocations.get(j).x = segmentLocations.get(j - 1).x;
                 segmentLocations.get(j).y = segmentLocations.get(j - 1).y;
             }
-
             // Move the head in the appropriate heading
             // Get the existing head position
             // renamed point p to point head for easy readability
             Point head = segmentLocations.get(0);
-
             // Determine the new position if the snake continues in its current direction
             Point newHead = new Point(head);
-
             // Move it appropriately
             switch (heading) {
                 case UP:
@@ -197,15 +157,14 @@ class Snake {
                     newHead.x--;
                     break;
             }
-
             // Update the head position if the movement is allowed
             head.x = newHead.x;
             head.y = newHead.y;
         }
     }
 
-
-
+    // SnakeGame class needs this for updating the score
+    // It causes for a new game
     boolean detectDeath() {
         boolean screenEdgeCollision = checkScreenEdgeCollision();
         boolean selfCollision = checkSelfCollision();
@@ -213,6 +172,8 @@ class Snake {
         return screenEdgeCollision || selfCollision;
     }
 
+    //Checks out of bounds of the game
+    //For the snake
     private boolean checkScreenEdgeCollision() {
         Point headLocation = segmentLocations.get(0);
 
@@ -240,7 +201,6 @@ class Snake {
 
     boolean checkDinner(Point location, GoldenApple goldenApple) {
         boolean ateDinner = false;
-
         // Predict the snake's future positions and check for collision with the apple
         for (int i = 0; i < segmentLocations.size(); i++) {
             Point segment = segmentLocations.get(i);
@@ -266,22 +226,18 @@ class Snake {
                     break;
                 }
             }
-
             if (isSpeedIncreased && System.currentTimeMillis() - speedIncreaseStartTime >= speedIncreaseDuration) {
                 resetSpeed(); // Reset speed if the speed increase duration has elapsed
             }
         }
-
         return ateDinner;
     }
-
 
     public void draw(Canvas canvas, Paint paint) {
         SnakeDrawer.drawSnake(canvas, paint, heading);
     }
 
-
-    // Handle changing direction
+    // Handle changing direction clicking/touching
     /*
         @Override
         public void switchHeading(MotionEvent motionEvent) {
@@ -293,7 +249,7 @@ class Snake {
         }else {
             rotateLeft();
         }
-    }*/
+    }
 
     // Rotate right class
     private void rotateRight(){
@@ -312,6 +268,7 @@ class Snake {
                 break;
         }
     }
+
     // Rotate left class
     private void rotateLeft(){
         switch (heading) {
@@ -329,6 +286,7 @@ class Snake {
                 break;
         }
     }
+    */
 
     private void increaseSpeed() {
         mSpeed = 1.5;
@@ -342,5 +300,4 @@ class Snake {
         mSpeed = 1; // Resetting the speed to zero
         isSpeedIncreased = false;
     }
-
 }

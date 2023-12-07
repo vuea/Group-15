@@ -1,14 +1,10 @@
 package com.example.group_15;
-
-
 import android.graphics.Bitmap;
-
 import android.graphics.Canvas;
-
 import android.graphics.Paint;
 import android.graphics.Point;
-
 import java.util.ArrayList;
+
 public class SnakeDrawer {
     private ArrayList<Point> segmentLocations;
     private int mSegmentSize;

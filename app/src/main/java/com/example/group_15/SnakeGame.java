@@ -1,5 +1,4 @@
 package com.example.group_15;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -7,65 +6,37 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
+
 import android.media.MediaPlayer;
-import android.media.SoundPool;
-import android.os.Build;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
-
-
 import java.io.IOException;
 
 public class SnakeGame extends SurfaceView implements Runnable {
-
     private Thread mThread = null;
     private long mNextFrameTime;
     private volatile boolean mPlaying = false;
     private volatile boolean mPaused = true;
-
-    private SoundPool mSoundPool;
-    private int mEatSoundID;
-    private int mCrashSoundID;
-    private int mSpeedSoundID;
-    private int mBackgroundSoundID;
-
-
     private final int NUM_BLOCKS_WIDE = 40;
     private int mNumBlocksHigh;
-
     private int mScore;
-
     private Canvas mCanvas;
     private SurfaceHolder mSurfaceHolder;
     private Paint mPaint;
-
     private Snake mSnake;
     private Apple mApple;
     private GoldenApple mGoldenApple;
     private Sound mSound;
     private Button mPauseButton;
-
-    private boolean isGamePaused = false;
-    private long goldenAppleTimer = 0;
-    private boolean isGoldenAppleConsumed = false;
-    private long goldenAppleSpawnInterval = 5000; // Time interval for golden apple spawn (in milliseconds)
     private int mBlockSize;
     private final int DESIRED_WIDTH = 1280;
     private final int DESIRED_HEIGHT = 720;
-    private int highestScore = 0; // Variable to store the highest score
     private int mHighestScore = 0; // Variable to store the highest score
-
-
     private MediaPlayer backgroundMusicPlayer;
 
     public SnakeGame(Context context, Point size) {
@@ -107,8 +78,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
             playBackgroundMusic(getContext());
         }
     }
-
-
 
     @Override
     public void run() {
@@ -262,7 +231,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mThread.start();
     }
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mPaused) {
@@ -306,22 +274,17 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     private void drawHighestScore(Canvas canvas, Paint paint) {
         paint.setColor(Color.WHITE);
-        paint.setTextSize(40); // Set the text size to 40 (you can adjust this value as needed)
+        paint.setTextSize(40); //
 
         String highestScoreText = "Highest Score: " + mHighestScore;
         float textWidth = paint.measureText(highestScoreText);
         float x = (getWidth() - textWidth) / 2; // Center x-coordinate
 
         // Calculate y-coordinate for top center positioning
-        float y = paint.getTextSize(); // Start at the text size (to add a buffer space, you can modify this value)
+        float y = paint.getTextSize();
 
         // Draw the highest score text on the canvas
         canvas.drawText(highestScoreText, x, y, paint);
-    }
-
-    // Method to retrieve the highest score
-    public int getHighestScore() {
-        return highestScore;
     }
 
     // Method to update the highest score
@@ -331,8 +294,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
     }
 
-    // Inside the SnakeGame class or where the game session ends (e.g., game-over conditions)
-
+    // Game ends it updates score
     public void gameOver() {
         // Assuming mScore holds the current game score
         if (mScore > mHighestScore) {
@@ -360,7 +322,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
     }
 
-
     private void stopBackgroundMusic() {
         if (backgroundMusicPlayer != null && backgroundMusicPlayer.isPlaying()) {
             backgroundMusicPlayer.stop();
@@ -368,5 +329,4 @@ public class SnakeGame extends SurfaceView implements Runnable {
             backgroundMusicPlayer = null;
         }
     }
-
 }
