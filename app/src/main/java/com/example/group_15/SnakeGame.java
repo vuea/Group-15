@@ -9,8 +9,10 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -60,6 +62,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private int mBlockSize;
     private final int DESIRED_WIDTH = 1280;
     private final int DESIRED_HEIGHT = 720;
+
+    private MediaPlayer backgroundMusicPlayer;
+
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
@@ -70,6 +75,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
         // Create the pause button
         mPauseButton = new Button(context);
+
     }
 
     private void initializeGameObjects(Context context, Point size) {
@@ -87,14 +93,18 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mApple.spawn(mGoldenApple);
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
-        mSound.playBackgroundMusic();
 
         // Check if the golden apple is not already spawned, then trigger the delayed spawn
         if (mGoldenApple.getLocation().x == -10) {
             startDelayedGoldenAppleSpawn();
+        }
 
+        // Check if background music player is not playing, then resume the music
+        if (backgroundMusicPlayer == null || !backgroundMusicPlayer.isPlaying()) {
+            playBackgroundMusic(getContext());
         }
     }
+
 
 
     @Override
@@ -126,7 +136,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void update() {
         mSnake.move();
-
         if (mSnake.checkDinner(mApple.getLocation(), mGoldenApple)) {
             mApple.spawn(mGoldenApple);
             mScore++;
@@ -144,12 +153,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
 
         if (mSnake.detectDeath()) {
- 
-            mSound.stopBackgroundMusic();
             mSound.playCrashSound();
-
             mPaused = true;
-
+            stopBackgroundMusic();
         }
     }
 
@@ -231,7 +237,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void pause() {
         mPlaying = false;
-        mSound.stopBackgroundMusic();
         try {
             mThread.join();
         } catch (InterruptedException e) {
@@ -243,7 +248,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mPlaying = true;
         mThread = new Thread(this);
         mThread.start();
-        mSound.playBackgroundMusic();
     }
 
 
@@ -286,6 +290,31 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void startDelayedGoldenAppleSpawn() {
         mGoldenApple.spawnGoldenAppleWithDelay();
+    }
+
+    private void playBackgroundMusic(Context context) {
+        try {
+            AssetManager assetManager = context.getAssets();
+            AssetFileDescriptor descriptor = assetManager.openFd("background-music.ogg");
+
+            backgroundMusicPlayer = new MediaPlayer(); // Instantiate the MediaPlayer object
+            backgroundMusicPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+            backgroundMusicPlayer.setLooping(true); // Enable looping
+            backgroundMusicPlayer.prepare();
+            backgroundMusicPlayer.start(); // Start playing the background music
+        } catch (IOException e) {
+            Log.e("BackgroundMusic", "Error playing background music: " + e.getMessage());
+            // Handle error
+        }
+    }
+
+
+    private void stopBackgroundMusic() {
+        if (backgroundMusicPlayer != null && backgroundMusicPlayer.isPlaying()) {
+            backgroundMusicPlayer.stop();
+            backgroundMusicPlayer.release();
+            backgroundMusicPlayer = null;
+        }
     }
 
 }
