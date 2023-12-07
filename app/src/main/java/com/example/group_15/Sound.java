@@ -7,6 +7,7 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -15,9 +16,9 @@ public class Sound implements ISound {
     private SoundPool mSoundPool;
     private int mEatSoundID;
     private int mCrashSoundID;
-
     private int mSpeedSoundID;
-
+    private int mBackgroundSoundID;
+    private boolean isBackgroundMusicPlaying = false;
     public Sound(Context context) {
         initializeSoundPool(context);
     }
@@ -50,6 +51,9 @@ public class Sound implements ISound {
             descriptor = assetManager.openFd("speed-effect.ogg");
             mSpeedSoundID = mSoundPool.load(descriptor, 0);
 
+            descriptor = assetManager.openFd("background-music.ogg");
+            mBackgroundSoundID = mSoundPool.load(descriptor, 0);
+
         } catch (IOException e) {
             // Handle the error
             e.printStackTrace();
@@ -69,6 +73,25 @@ public class Sound implements ISound {
     public void playSpeedSound() {
         mSoundPool.play(mSpeedSoundID, 1, 1, 0, 0, 1);
     }
+
+    public void playBackgroundMusic() {
+        mSoundPool.play(mBackgroundSoundID, 1, 1, 0, -1, 1);
+        isBackgroundMusicPlaying = true;
+    }
+    public boolean isBackgroundMusicPlaying() {
+        return isBackgroundMusicPlaying;
+    }
+    public void stopBackgroundMusic() {
+        if (isBackgroundMusicPlaying) {
+            mSoundPool.stop(mBackgroundSoundID);
+            isBackgroundMusicPlaying = false;
+            Log.d("Sound", "Background music stopped successfully");
+        }
+    }
+
+
+
+
     public int getEatSoundID() {
         return mEatSoundID;
     }
@@ -77,7 +100,12 @@ public class Sound implements ISound {
         return mCrashSoundID;
     }
 
-    public int getmSpeedSoundID() {
+    public int getSpeedSoundID() {
         return mSpeedSoundID;
     }
+
+    public int getBackgroundMusic() {
+        return mBackgroundSoundID;
+    }
+
 }

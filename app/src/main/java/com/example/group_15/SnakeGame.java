@@ -34,6 +34,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private SoundPool mSoundPool;
     private int mEatSoundID;
     private int mCrashSoundID;
+    private int mSpeedSoundID;
+    private int mBackgroundSoundID;
+
 
     private final int NUM_BLOCKS_WIDE = 40;
     private int mNumBlocksHigh;
@@ -84,6 +87,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mApple.spawn(mGoldenApple);
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
+        mSound.playBackgroundMusic();
 
         // Check if the golden apple is not already spawned, then trigger the delayed spawn
         if (mGoldenApple.getLocation().x == -10) {
@@ -95,7 +99,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
+
         while (mPlaying) {
+
             if (!mPaused) {
                 if (updateRequired()) {
                     update();
@@ -138,8 +144,14 @@ public class SnakeGame extends SurfaceView implements Runnable {
         }
 
         if (mSnake.detectDeath()) {
+            if (mSound.isBackgroundMusicPlaying()) {
+                mSound.stopBackgroundMusic();
+            }
+
             mSound.playCrashSound();
+
             mPaused = true;
+
         }
     }
 
@@ -221,6 +233,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void pause() {
         mPlaying = false;
+        mSound.stopBackgroundMusic();
         try {
             mThread.join();
         } catch (InterruptedException e) {
@@ -232,6 +245,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mPlaying = true;
         mThread = new Thread(this);
         mThread.start();
+        mSound.playBackgroundMusic();
     }
 
 
