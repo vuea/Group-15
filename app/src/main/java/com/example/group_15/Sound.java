@@ -18,7 +18,7 @@ public class Sound implements ISound {
     private int mCrashSoundID;
     private int mSpeedSoundID;
     private int mBackgroundSoundID;
-    private boolean isBackgroundMusicPlaying = false;
+
     public Sound(Context context) {
         initializeSoundPool(context);
     }
@@ -74,20 +74,16 @@ public class Sound implements ISound {
         mSoundPool.play(mSpeedSoundID, 1, 1, 0, 0, 1);
     }
 
+    @Override
     public void playBackgroundMusic() {
         mSoundPool.play(mBackgroundSoundID, 1, 1, 0, -1, 1);
-        isBackgroundMusicPlaying = true;
     }
-    public boolean isBackgroundMusicPlaying() {
-        return isBackgroundMusicPlaying;
-    }
+
+    @Override
     public void stopBackgroundMusic() {
-        if (isBackgroundMusicPlaying) {
-            mSoundPool.stop(mBackgroundSoundID);
-            isBackgroundMusicPlaying = false;
-            Log.d("Sound", "Background music stopped successfully");
-        }
+        mSoundPool.stop(mBackgroundSoundID);
     }
+
 
 
 
