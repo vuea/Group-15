@@ -32,6 +32,11 @@ class Snake {
 
     private Bitmap mBitmapBody;
     private SnakeDrawer SnakeDrawer;
+    private Bitmap mBitmapHeadRightFast;
+    private Bitmap mBitmapHeadLeftFast;
+    private Bitmap mBitmapHeadUpFast;
+    private Bitmap mBitmapHeadDownFast;
+    private Bitmap mBitmapBodyFast;
 
     public void setSound(Sound sound) {
         mSound = sound;
@@ -95,6 +100,23 @@ class Snake {
         mBitmapBody = Bitmap
                 .createScaledBitmap(mBitmapBody,
                         ss, ss, false);
+        // Create and scale the bitmaps for the golden parts to match the original size
+        mBitmapHeadRightFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
+        mBitmapHeadRightFast = Bitmap.createScaledBitmap(mBitmapHeadRightFast, mSegmentSize, mSegmentSize, false);
+
+        mBitmapHeadLeftFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
+        mBitmapHeadLeftFast = Bitmap.createScaledBitmap(mBitmapHeadLeftFast, mSegmentSize, mSegmentSize, false);
+
+        mBitmapHeadUpFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
+        mBitmapHeadUpFast = Bitmap.createScaledBitmap(mBitmapHeadUpFast, mSegmentSize, mSegmentSize, false);
+
+        mBitmapHeadDownFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
+        mBitmapHeadDownFast = Bitmap.createScaledBitmap(mBitmapHeadDownFast, mSegmentSize, mSegmentSize, false);
+
+        mBitmapBodyFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenbody);
+        mBitmapBodyFast = Bitmap.createScaledBitmap(mBitmapBodyFast, mSegmentSize, mSegmentSize, false);
+
+
         // The halfway point across the screen in pixels
         // Used to detect which side of screen was pressed
         halfWayPoint = mr.x * ss / 2;
@@ -234,8 +256,14 @@ class Snake {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        SnakeDrawer.drawSnake(canvas, paint, heading);
+        if (isSpeedIncreased) {
+            this.SnakeDrawer.drawSnakeWithSpeed(canvas, paint, heading, mBitmapHeadRightFast, mBitmapHeadLeftFast,
+                    mBitmapHeadUpFast, mBitmapHeadDownFast, mBitmapBodyFast);
+        } else {
+            this.SnakeDrawer.drawSnake(canvas, paint, heading);
+        }
     }
+
 
     // Handle changing direction clicking/touching
     /*
@@ -300,4 +328,6 @@ class Snake {
         mSpeed = 1; // Resetting the speed to zero
         isSpeedIncreased = false;
     }
+
+
 }

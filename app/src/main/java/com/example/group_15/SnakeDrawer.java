@@ -1,4 +1,5 @@
 package com.example.group_15;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -39,6 +40,31 @@ public class SnakeDrawer {
             }
             for (int i = 1; i < segmentLocations.size(); i++) {
                 canvas.drawBitmap(mBitmapBody, segmentLocations.get(i).x * mSegmentSize, segmentLocations.get(i).y * mSegmentSize, paint);
+            }
+        }
+    }
+
+    // Method to draw snake with different bitmaps for head and body based on speed
+    public void drawSnakeWithSpeed(Canvas canvas, Paint paint, Snake.Heading heading,
+                                   Bitmap headRight, Bitmap headLeft, Bitmap headUp,
+                                   Bitmap headDown, Bitmap body) {
+        if (!segmentLocations.isEmpty()) {
+            switch (heading) {
+                case RIGHT:
+                    canvas.drawBitmap(headRight, segmentLocations.get(0).x * mSegmentSize, segmentLocations.get(0).y * mSegmentSize, paint);
+                    break;
+                case LEFT:
+                    canvas.drawBitmap(headLeft, segmentLocations.get(0).x * mSegmentSize, segmentLocations.get(0).y * mSegmentSize, paint);
+                    break;
+                case UP:
+                    canvas.drawBitmap(headUp, segmentLocations.get(0).x * mSegmentSize, segmentLocations.get(0).y * mSegmentSize, paint);
+                    break;
+                case DOWN:
+                    canvas.drawBitmap(headDown, segmentLocations.get(0).x * mSegmentSize, segmentLocations.get(0).y * mSegmentSize, paint);
+                    break;
+            }
+            for (int i = 1; i < segmentLocations.size(); i++) {
+                canvas.drawBitmap(body, segmentLocations.get(i).x * mSegmentSize, segmentLocations.get(i).y * mSegmentSize, paint);
             }
         }
     }
