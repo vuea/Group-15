@@ -44,12 +44,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mSound = new Sound(context);
         mBlockSize = DESIRED_WIDTH / NUM_BLOCKS_WIDE;
         mNumBlocksHigh = DESIRED_HEIGHT / mBlockSize;
-        // Initialize game objects
         initializeGameObjects(context, size);
-
-        // Create the pause button
         mPauseButton = new Button(context);
-
     }
 
     private void initializeGameObjects(Context context, Point size) {
@@ -138,7 +134,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
         }
     }
-
 
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {

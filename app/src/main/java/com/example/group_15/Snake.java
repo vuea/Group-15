@@ -100,19 +100,25 @@ class Snake {
         mBitmapBody = Bitmap
                 .createScaledBitmap(mBitmapBody,
                         ss, ss, false);
-        // Create and scale the bitmaps for the golden parts to match the original size
         mBitmapHeadRightFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
         mBitmapHeadRightFast = Bitmap.createScaledBitmap(mBitmapHeadRightFast, mSegmentSize, mSegmentSize, false);
 
-        mBitmapHeadLeftFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
-        mBitmapHeadLeftFast = Bitmap.createScaledBitmap(mBitmapHeadLeftFast, mSegmentSize, mSegmentSize, false);
+        Matrix matrixFastLeft = new Matrix();
+        matrixFastLeft.preScale(-1, 1);
+        mBitmapHeadLeftFast = Bitmap.createBitmap(mBitmapHeadRightFast, 0, 0, mSegmentSize, mSegmentSize, matrixFastLeft, true);
 
-        mBitmapHeadUpFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
-        mBitmapHeadUpFast = Bitmap.createScaledBitmap(mBitmapHeadUpFast, mSegmentSize, mSegmentSize, false);
+        Matrix matrixFastUp = new Matrix();
+        matrixFastUp.preRotate(-90); // Rotate counter-clockwise by 90 degrees
+        matrixFastUp.postScale(-1, 1); // Flip horizontally (along the X-axis)
+        mBitmapHeadUpFast = Bitmap.createBitmap(mBitmapHeadRightFast, 0, 0, mSegmentSize, mSegmentSize, matrixFastUp, true);
 
-        mBitmapHeadDownFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenhead);
-        mBitmapHeadDownFast = Bitmap.createScaledBitmap(mBitmapHeadDownFast, mSegmentSize, mSegmentSize, false);
+        Matrix matrixFastDown = new Matrix();
+        matrixFastDown.preRotate(90); // Rotate clockwise by 90 degrees
+        matrixFastDown.postScale(-1, 1); // Flip horizontally (along the X-axis)
+        mBitmapHeadDownFast = Bitmap.createBitmap(mBitmapHeadRightFast, 0, 0, mSegmentSize, mSegmentSize, matrixFastDown, true);
 
+
+        // Create and scale the fast body bitmap
         mBitmapBodyFast = BitmapFactory.decodeResource(context.getResources(), R.drawable.goldenbody);
         mBitmapBodyFast = Bitmap.createScaledBitmap(mBitmapBodyFast, mSegmentSize, mSegmentSize, false);
 
@@ -176,7 +182,7 @@ class Snake {
                     break;
 
                 case LEFT:
-                    newHead.x--;
+                    newHead.x--;;
                     break;
             }
             // Update the head position if the movement is allowed
@@ -327,6 +333,13 @@ class Snake {
     private void resetSpeed() {
         mSpeed = 1; // Resetting the speed to zero
         isSpeedIncreased = false;
+    }
+
+    private Bitmap rotateFastBitmap(Bitmap sourceBitmap, int degrees) {
+        Matrix matrix = new Matrix();
+        matrix.setRotate(degrees);
+
+        return Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap.getHeight(), matrix, true);
     }
 
 
