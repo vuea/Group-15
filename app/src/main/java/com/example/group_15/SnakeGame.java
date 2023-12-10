@@ -110,6 +110,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mApple.spawn(mGoldenApple);
             mScore++;
             mSound.playEatSound();
+            mSound.playCrunchSound();
         }
 
         if (mSnake.checkDinner(mGoldenApple.getLocation(), mGoldenApple)) {
@@ -119,7 +120,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (mGoldenApple.isEaten()) {
             // If the golden apple is eaten, manage its reappearance after a certain duration
             mGoldenApple.manageDisappearance();
+            mSound.playCrunchSound();
             mSound.playSpeedSound();
+            mSound.playGoldenAppleModeSound();
         }
 
         if (mSnake.detectDeath()) {

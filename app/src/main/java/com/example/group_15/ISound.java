@@ -4,4 +4,6 @@ public interface ISound {
     void playCrashSound();
     void playSpeedSound();
     void stopBackgroundMusic();
+    void playGoldenAppleModeSound();
+    void playCrunchSound();
 }

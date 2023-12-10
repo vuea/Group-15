@@ -15,6 +15,8 @@ public class Sound implements ISound {
     private int mEatSoundID;
     private int mCrashSoundID;
     private int mSpeedSoundID;
+    private int mGoldenAppleModeID;
+    private int mCrunchID;
 
     private MediaPlayer backgroundMusicPlayer;
 
@@ -45,6 +47,12 @@ public class Sound implements ISound {
 
             descriptor = assetManager.openFd("speed-effect.ogg");
             mSpeedSoundID = mSoundPool.load(descriptor, 0);
+
+            descriptor = assetManager.openFd("golden_apple_mode.ogg");
+            mGoldenAppleModeID = mSoundPool.load(descriptor, 0);
+
+            descriptor = assetManager.openFd("crunch.ogg");
+            mCrunchID = mSoundPool.load(descriptor, 0);
 
 
         } catch (IOException e) {
@@ -89,6 +97,14 @@ public class Sound implements ISound {
 
     public void playSpeedSound() {
         mSoundPool.play(mSpeedSoundID, 1, 1, 0, 0, 1);
+    }
+
+    public void playGoldenAppleModeSound() {
+        mSoundPool.play(mGoldenAppleModeID, 1, 1, 0, 0, 1);
+    }
+
+    public void playCrunchSound() {
+        mSoundPool.play(mCrunchID, 1, 1, 0, 0, 1);
     }
 
 }
