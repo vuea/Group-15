@@ -1,21 +1,20 @@
 package com.example.group_15;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
 import android.media.MediaPlayer;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import java.io.IOException;
+
 
 public class SnakeGame extends SurfaceView implements Runnable {
     private Thread mThread = null;
@@ -301,27 +300,11 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void setSnakeDirection(Snake.Heading newHeading) {
         mSnake.setHeading(newHeading);
     }
-    private void playBackgroundMusic(Context context) {
-        try {
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor descriptor = assetManager.openFd("background-music.ogg");
-
-            backgroundMusicPlayer = new MediaPlayer(); // Instantiate the MediaPlayer object
-            backgroundMusicPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
-            backgroundMusicPlayer.setLooping(true); // Enable looping
-            backgroundMusicPlayer.prepare();
-            backgroundMusicPlayer.start(); // Start playing the background music
-        } catch (IOException e) {
-            Log.e("BackgroundMusic", "Error playing background music: " + e.getMessage());
-            // Handle error
-        }
+    public void playBackgroundMusic(Context context) {
+        mSound.playBackgroundMusic(context);
     }
 
-    private void stopBackgroundMusic() {
-        if (backgroundMusicPlayer != null && backgroundMusicPlayer.isPlaying()) {
-            backgroundMusicPlayer.stop();
-            backgroundMusicPlayer.release();
-            backgroundMusicPlayer = null;
-        }
+    public void stopBackgroundMusic() {
+        mSound.stopBackgroundMusic();
     }
 }
