@@ -8,6 +8,7 @@ import android.graphics.Point;
 
 import android.media.MediaPlayer;
 
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -37,6 +38,10 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private final int DESIRED_HEIGHT = 720;
     private int mHighestScore = 0; // Variable to store the highest score
     private MediaPlayer backgroundMusicPlayer;
+    private ZombieHead mZombieHead;
+    private static final long ZOMBIE_HEAD_DISAPPEAR_DURATION = 10000; // Disappearance duration in milliseconds (5 seconds)
+    private static final long ZOMBIE_HEAD_REAPPEAR_DELAY = 5000; // Delay before reappearance (10 seconds)
+    private long mZombieHeadLastDisappearedTime; // Variable to track the last disappearance time of the zombie head
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -55,11 +60,17 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mApple = new Apple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
         mGoldenApple = new GoldenApple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
         mSnake = new Snake(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+        mZombieHead = new ZombieHead(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
+
     }
 
     public void newGame() {
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn(mGoldenApple);
+
+        // Spawn the zombie head
+        mZombieHead.spawnZombieHead();
+
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
 
@@ -72,6 +83,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (backgroundMusicPlayer == null || !backgroundMusicPlayer.isPlaying()) {
             playBackgroundMusic(getContext());
         }
+
+
     }
 
     @Override
@@ -86,6 +99,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             }
 
             draw();
+            manageZombieHeadDisappearance();
         }
     }
 
@@ -103,9 +117,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void update() {
         mSnake.move();
-        final long SLOWER_DELAY_MS = 150;
-
-
         if (mSnake.checkDinner(mApple.getLocation(), mGoldenApple)) {
             mApple.spawn(mGoldenApple);
             mScore++;
@@ -125,9 +136,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mSound.playGoldenAppleModeSound();
         }
 
-        if (mSnake.detectDeath()) {
-
-
+        if (mSnake.detectDeath() || mZombieHeadCollision()) {
             mSound.stopBackgroundMusic();
             gameOver();
             mSound.playCrashSound();
@@ -147,6 +156,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mSnake.draw(mCanvas, mPaint);
             drawPausedText();
             drawHighestScore(mCanvas, mPaint);
+            mZombieHead.drawZombieHead(mCanvas, mPaint);
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
@@ -272,15 +282,10 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private void drawHighestScore(Canvas canvas, Paint paint) {
         paint.setColor(Color.WHITE);
         paint.setTextSize(40); //
-
         String highestScoreText = "Highest Score: " + mHighestScore;
         float textWidth = paint.measureText(highestScoreText);
         float x = (getWidth() - textWidth) / 2; // Center x-coordinate
-
-        // Calculate y-coordinate for top center positioning
         float y = paint.getTextSize();
-
-        // Draw the highest score text on the canvas
         canvas.drawText(highestScoreText, x, y, paint);
     }
 
@@ -309,5 +314,19 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void stopBackgroundMusic() {
         mSound.stopBackgroundMusic();
+    }
+
+    private boolean mZombieHeadCollision() {
+        Point snakeHeadLocation = mSnake.getSnakeHeadLocation(); // Get snake's head location
+        return snakeHeadLocation.equals(mZombieHead.getLocation());
+    }
+
+    private void manageZombieHeadDisappearance() {
+        long currentTime = System.currentTimeMillis();
+        if (!mPaused && currentTime - mZombieHeadLastDisappearedTime >= ZOMBIE_HEAD_DISAPPEAR_DURATION) {
+            // If the time for disappearance has passed, make the zombie head disappear
+            mZombieHeadLastDisappearedTime = currentTime;
+            mZombieHead.disappearZombieHeadWithDelay(ZOMBIE_HEAD_REAPPEAR_DELAY);
+        }
     }
 }

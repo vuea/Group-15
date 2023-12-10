@@ -232,12 +232,10 @@ class Snake {
         // Predict the snake's future positions and check for collision with the apple
         for (int i = 0; i < segmentLocations.size(); i++) {
             Point segment = segmentLocations.get(i);
-
             // Predict snake's future positions and check for collision
             for (double t = 0.0; t <= 1.0; t += 0.1) {
                 int predictedX = (int) (segment.x + t * (segment.x - location.x));
                 int predictedY = (int) (segment.y + t * (segment.y - location.y));
-
                 // Check if the predicted position intersects with the apple
                 if (predictedX == location.x && predictedY == location.y) {
                     // Collision detected
@@ -335,12 +333,13 @@ class Snake {
         isSpeedIncreased = false;
     }
 
-    private Bitmap rotateFastBitmap(Bitmap sourceBitmap, int degrees) {
-        Matrix matrix = new Matrix();
-        matrix.setRotate(degrees);
-
-        return Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap.getHeight(), matrix, true);
+    public Point getSnakeHeadLocation() {
+        // Assuming your snake stores its segments in an ArrayList<Point>
+        if (!segmentLocations.isEmpty()) {
+            return segmentLocations.get(0); // Assuming the first element is the snake's head
+        } else {
+            // If the snake's segments list is empty, return a default Point or handle the case as appropriate
+            return new Point(0, 0); // For example, return (0, 0) as a default value
+        }
     }
-
-
 }
