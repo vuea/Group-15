@@ -41,9 +41,11 @@ class Snake {
     public void setSound(Sound sound) {
         mSound = sound;
     }
+
     public void setHeading(Heading newHeading) {
         heading = newHeading;
     }
+
     //headings
     public enum Heading {
         UP, RIGHT, DOWN, LEFT
@@ -182,7 +184,8 @@ class Snake {
                     break;
 
                 case LEFT:
-                    newHead.x--;;
+                    newHead.x--;
+                    ;
                     break;
             }
             // Update the head position if the movement is allowed
@@ -342,4 +345,6 @@ class Snake {
             return new Point(0, 0); // For example, return (0, 0) as a default value
         }
     }
+
+
 }

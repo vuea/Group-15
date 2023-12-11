@@ -1,6 +1,7 @@
 package com.example.group_15;
 import android.content.Context;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -39,9 +40,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private int mHighestScore = 0; // Variable to store the highest score
     private MediaPlayer backgroundMusicPlayer;
     private ZombieHead mZombieHead;
-    private static final long ZOMBIE_HEAD_DISAPPEAR_DURATION = 10000; // Disappearance duration in milliseconds (5 seconds)
-    private static final long ZOMBIE_HEAD_REAPPEAR_DELAY = 5000; // Delay before reappearance (10 seconds)
-    private long mZombieHeadLastDisappearedTime; // Variable to track the last disappearance time of the zombie head
+    private static final long ZOMBIE_HEAD_DISAPPEAR_DURATION = 10000;
+    private static final long ZOMBIE_HEAD_REAPPEAR_DELAY = 5000;
+    private long mZombieHeadLastDisappearedTime;
+
+    private boolean isGameOver = false;
+    private boolean showTouchScreen = true;
+    private Bitmap gameOverBitmap;
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -50,6 +55,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mNumBlocksHigh = DESIRED_HEIGHT / mBlockSize;
         initializeGameObjects(context, size);
         mPauseButton = new Button(context);
+        gameOverBitmap = Bitmap.createBitmap(size.x, size.y, Bitmap.Config.ARGB_8888);
     }
 
     private void initializeGameObjects(Context context, Point size) {
@@ -61,43 +67,29 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mGoldenApple = new GoldenApple(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
         mSnake = new Snake(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
         mZombieHead = new ZombieHead(context, new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), blockSize);
-
     }
 
     public void newGame() {
+        isGameOver = false;
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn(mGoldenApple);
-
-        // Spawn the zombie head
         mZombieHead.spawnZombieHead();
-
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
-
-        // Check if the golden apple is not already spawned, then trigger the delayed spawn
-        if (mGoldenApple.getLocation().x == -10) {
-            startDelayedGoldenAppleSpawn();
-        }
-
-        // Check if background music player is not playing, then resume the music
+        mGoldenApple.spawnGoldenApple();
         if (backgroundMusicPlayer == null || !backgroundMusicPlayer.isPlaying()) {
             playBackgroundMusic(getContext());
         }
-
-
     }
 
     @Override
     public void run() {
-
         while (mPlaying) {
-
             if (!mPaused) {
                 if (updateRequired()) {
                     update();
                 }
             }
-
             draw();
             manageZombieHeadDisappearance();
         }
@@ -106,12 +98,10 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public boolean updateRequired() {
         final long TARGET_FPS = 10;
         final long MILLIS_PER_SECOND = 1200;
-
         if (mNextFrameTime <= System.currentTimeMillis()) {
             mNextFrameTime = System.currentTimeMillis() + MILLIS_PER_SECOND / TARGET_FPS;
             return true;
         }
-
         return false;
     }
 
@@ -120,46 +110,49 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (mSnake.checkDinner(mApple.getLocation(), mGoldenApple)) {
             mApple.spawn(mGoldenApple);
             mScore++;
-            mSound.playEatSound();
             mSound.playCrunchSound();
         }
-
         if (mSnake.checkDinner(mGoldenApple.getLocation(), mGoldenApple)) {
-            mGoldenApple.setEaten(); // Mark the golden apple as eate
+            mGoldenApple.setEaten();
         }
-
         if (mGoldenApple.isEaten()) {
-            // If the golden apple is eaten, manage its reappearance after a certain duration
             mGoldenApple.manageDisappearance();
-            mSound.playCrunchSound();
             mSound.playSpeedSound();
-            mSound.playGoldenAppleModeSound();
         }
-
         if (mSnake.detectDeath() || mZombieHeadCollision()) {
             mSound.stopBackgroundMusic();
+            //mSound.stopGoldenAppleModeSound();
+            mPaused = true;
+            isGameOver = true; // Set the game over flag
             gameOver();
             mSound.playCrashSound();
-            mPaused = true;
-            stopBackgroundMusic();
-
         }
     }
+
 
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
-            drawScore();
-            mApple.drawApple(mCanvas, mPaint);
-            mGoldenApple.drawGoldenApple(mCanvas, mPaint);
-            mSnake.draw(mCanvas, mPaint);
-            drawPausedText();
-            drawHighestScore(mCanvas, mPaint);
-            mZombieHead.drawZombieHead(mCanvas, mPaint);
-            mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+            if (mCanvas != null) {
+                // Always clear the canvas at the beginning of each frame
+                mCanvas.drawColor(Color.argb(255, 26, 128, 182));
+
+                if (showTouchScreen) {
+                    drawTouchScreen(); // Display "Touch Screen" text
+                } else {
+                    if (isGameOver) {
+                        drawGameOverScreen(); // Display "Game Over" screen
+                    } else {
+                        drawGameObjects(); // Draw game objects during gameplay
+                    }
+                    drawHighestScore(mCanvas, mPaint); // Draw the highest score
+                }
+
+                mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+            }
         }
     }
+
 
     private void drawScore() {
         mPaint.setColor(Color.argb(255, 255, 255, 255));
@@ -167,36 +160,17 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mCanvas.drawText(String.valueOf(mScore), 20, 120, mPaint);
     }
 
-    private void drawPausedText() {
-        if (mPaused) {
-            mPaint.setColor(Color.WHITE);
-            mPaint.setTextSize(50);
-
-            String customText = "Touch Screen";
-            float textWidth = mPaint.measureText(customText);
-            float x = (getWidth() - textWidth) / 2;
-            float y = getHeight() / 2;
-
-            mCanvas.drawText(customText, x, y, mPaint);
-
-            // Hide the pause button when the game is not started
-            setPauseButtonVisibility(View.INVISIBLE);
-        } else {
-            // Show the pause button when the game is started
-            setPauseButtonVisibility(View.VISIBLE);
-        }
-    }
-
-    //Click To Start Game Functionality
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        // Check for key events
         int action = motionEvent.getActionMasked();
         if (action == MotionEvent.ACTION_UP) {
-            // Start the game when a touch is detected, assuming game is paused
             if (mPaused) {
                 mPaused = false;
                 newGame();
+                return true;
+            }
+            if (showTouchScreen) {
+                showTouchScreen = false; // Hide "Touch Screen" text after the first touch event
                 return true;
             }
         }
@@ -263,7 +237,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         return super.onKeyDown(keyCode, event);
     }
 
-    // Modify the setPauseButtonVisibility() method to update the button visibility on the UI thread
     private void setPauseButtonVisibility(final int visibility) {
         post(new Runnable() {
             @Override
@@ -281,7 +254,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     private void drawHighestScore(Canvas canvas, Paint paint) {
         paint.setColor(Color.WHITE);
-        paint.setTextSize(40); //
+        paint.setTextSize(57); //
         String highestScoreText = "Highest Score: " + mHighestScore;
         float textWidth = paint.measureText(highestScoreText);
         float x = (getWidth() - textWidth) / 2; // Center x-coordinate
@@ -308,6 +281,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void setSnakeDirection(Snake.Heading newHeading) {
         mSnake.setHeading(newHeading);
     }
+
     public void playBackgroundMusic(Context context) {
         mSound.playBackgroundMusic(context);
     }
@@ -329,4 +303,37 @@ public class SnakeGame extends SurfaceView implements Runnable {
             mZombieHead.disappearZombieHeadWithDelay(ZOMBIE_HEAD_REAPPEAR_DELAY);
         }
     }
+
+    public void drawGameOverScreen() {
+        mCanvas.drawColor(Color.argb(255, 26, 128, 182)); // Clear the canvas
+        mPaint.setColor(Color.RED);
+        mPaint.setTextSize(200);
+        String gameOverText = "Game Over";
+        float textWidth = mPaint.measureText(gameOverText);
+        float x = (getWidth() - textWidth) / 2;
+        float y = getHeight() / 2;
+        mCanvas.drawText(gameOverText, x, y, mPaint);
+        drawGameObjects(); // Draw game objects after displaying "Game Over"
+    }
+
+    private void drawGameObjects() {
+        drawScore();
+        mApple.drawApple(mCanvas, mPaint);
+        mGoldenApple.drawGoldenApple(mCanvas, mPaint);
+        mSnake.draw(mCanvas, mPaint);
+        mZombieHead.drawZombieHead(mCanvas, mPaint);
+    }
+
+    public void drawTouchScreen() {
+        mPaint.setColor(Color.WHITE);
+        mPaint.setTextSize(100);
+        String customText = "Touch Screen";
+        float textWidth = mPaint.measureText(customText);
+        float x = (getWidth() - textWidth) / 2;
+        float y = getHeight() / 2;
+        mCanvas.drawText(customText, x, y, mPaint);
+    }
+
 }
+
+

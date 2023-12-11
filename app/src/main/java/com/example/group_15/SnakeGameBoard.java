@@ -15,6 +15,8 @@ public class SnakeGameBoard extends View {
     private Point snakePosition;
     private Point applePosition;
     private Point[][] parent;
+    // Background color paint
+
     public SnakeGameBoard(Context context) {
         super(context);
 
@@ -26,7 +28,9 @@ public class SnakeGameBoard extends View {
         drawGameBoard(canvas);
     }
 
+
     private void drawGameBoard(Canvas canvas) {
+
         // Draw grid lines
         // Draw snake at snakePosition
         // Draw apple at applePosition
