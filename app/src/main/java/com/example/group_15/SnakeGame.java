@@ -270,6 +270,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         });
     }
 
+    //Not using this for demo
     public void startDelayedGoldenAppleSpawn() {
         mGoldenApple.spawnGoldenAppleWithDelay();
     }
@@ -390,8 +391,6 @@ public class SnakeGame extends SurfaceView implements Runnable {
         // Set the background color
         backgroundColor = Color.rgb(red, green, blue);
     }
-
-
 }
 
 
