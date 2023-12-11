@@ -19,8 +19,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Random;
-
-
+import androidx.core.content.res.ResourcesCompat;
+import android.graphics.Typeface;
 public class SnakeGame extends SurfaceView implements Runnable {
     private Thread mThread = null;
     private long mNextFrameTime;
@@ -46,7 +46,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private static final long ZOMBIE_HEAD_DISAPPEAR_DURATION = 10000;
     private static final long ZOMBIE_HEAD_REAPPEAR_DELAY = 5000;
     private long mZombieHeadLastDisappearedTime;
-
+    private Typeface mTypeface;
     private boolean isGameOver = false;
     private boolean showTouchScreen = true;
     private Bitmap gameOverBitmap;
@@ -61,6 +61,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private long lastGameOverBlinkTime = System.currentTimeMillis();
 
     public SnakeGame(Context context, Point size) {
+
         super(context);
         mSound = new Sound(context);
         mBlockSize = DESIRED_WIDTH / NUM_BLOCKS_WIDE;
@@ -72,7 +73,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         backgroundColorPaint = new Paint();
         backgroundColorPaint.setStyle(Paint.Style.FILL);
         setRandomBackgroundColor();
-        // initializeBlinkingText(context);
+
     }
 
     private void initializeGameObjects(Context context, Point size) {
@@ -222,10 +223,12 @@ public class SnakeGame extends SurfaceView implements Runnable {
     public void pause() {
         mPlaying = false;
         try {
+
             mThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public void resume() {
@@ -345,12 +348,33 @@ public class SnakeGame extends SurfaceView implements Runnable {
         if (isGameOverTextVisible) {
             mPaint.setTextSize(200);
             mPaint.setColor(Color.RED);
-            String gameOverText = "Game Over";
+            String gameOverText = "GAME OVER";
             float textWidth = mPaint.measureText(gameOverText);
             float x = (getWidth() - textWidth) / 2;
             float y = getHeight() / 2;
             mCanvas.drawText(gameOverText, x, y, mPaint);
+
+            // Display the score
+            mPaint.setTextSize(100);
+            mPaint.setColor(Color.WHITE);
+            String scoreText = "SCORE: " + mScore;
+
+            float scoreWidth = mPaint.measureText(scoreText);
+            float scoreX = (getWidth() - scoreWidth) / 2;
+            float scoreY = y + 150; // Adjust the vertical position as needed
+            mCanvas.drawText(scoreText, scoreX, scoreY, mPaint);
+
+            // Display the try again
+            mPaint.setTextSize(70);
+            mPaint.setColor(Color.YELLOW);
+            String tryAgain = "click to try again ";
+
+            float tryAgainWidth = mPaint.measureText(tryAgain);
+            float tryAgainX = (getWidth() - tryAgainWidth) / 2;
+            float tryAgainY = y + 300; // Adjust the vertical position as needed
+            mCanvas.drawText(tryAgain,  tryAgainX,  tryAgainY, mPaint);
         }
+
     }
 
     private void drawGameObjects() {
