@@ -16,6 +16,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
 import java.util.Random;
 
 
@@ -50,7 +52,13 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private Bitmap gameOverBitmap;
 
     private Paint backgroundColorPaint;
-    private int backgroundColor; // New variable for background color
+
+
+    private int backgroundColor;
+    // New member variable for blinking text
+    private TextView blinkingTextView;
+    private boolean isGameOverTextVisible = true;
+    private long lastGameOverBlinkTime = System.currentTimeMillis();
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -64,6 +72,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         backgroundColorPaint = new Paint();
         backgroundColorPaint.setStyle(Paint.Style.FILL);
         setRandomBackgroundColor();
+        // initializeBlinkingText(context);
     }
 
     private void initializeGameObjects(Context context, Point size) {
@@ -319,15 +328,28 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void drawGameOverScreen() {
         mCanvas.drawColor(Color.BLACK);
-       // mCanvas.drawColor(Color.argb(255, 26, 128, 182)); // Clear the canvas
-        mPaint.setColor(Color.RED);
-        mPaint.setTextSize(200);
-        String gameOverText = "Game Over";
-        float textWidth = mPaint.measureText(gameOverText);
-        float x = (getWidth() - textWidth) / 2;
-        float y = getHeight() / 2;
-        mCanvas.drawText(gameOverText, x, y, mPaint);
+
         drawGameObjects(); // Draw game objects after displaying "Game Over"
+
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime - lastGameOverBlinkTime;
+
+        // Toggle visibility every 500 milliseconds (adjust frequency as needed)
+        if (elapsedTime > 500) {
+            isGameOverTextVisible = !isGameOverTextVisible;
+            lastGameOverBlinkTime = currentTime;
+        }
+
+        //set text size and color large and red
+        if (isGameOverTextVisible) {
+            mPaint.setTextSize(200);
+            mPaint.setColor(Color.RED);
+            String gameOverText = "Game Over";
+            float textWidth = mPaint.measureText(gameOverText);
+            float x = (getWidth() - textWidth) / 2;
+            float y = getHeight() / 2;
+            mCanvas.drawText(gameOverText, x, y, mPaint);
+        }
     }
 
     private void drawGameObjects() {
@@ -368,6 +390,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         // Set the background color
         backgroundColor = Color.rgb(red, green, blue);
     }
+
 
 }
 
