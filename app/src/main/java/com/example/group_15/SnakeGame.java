@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import java.util.Random;
 
 
 public class SnakeGame extends SurfaceView implements Runnable {
@@ -48,6 +49,9 @@ public class SnakeGame extends SurfaceView implements Runnable {
     private boolean showTouchScreen = true;
     private Bitmap gameOverBitmap;
 
+    private Paint backgroundColorPaint;
+    private int backgroundColor; // New variable for background color
+
     public SnakeGame(Context context, Point size) {
         super(context);
         mSound = new Sound(context);
@@ -56,6 +60,10 @@ public class SnakeGame extends SurfaceView implements Runnable {
         initializeGameObjects(context, size);
         mPauseButton = new Button(context);
         gameOverBitmap = Bitmap.createBitmap(size.x, size.y, Bitmap.Config.ARGB_8888);
+
+        backgroundColorPaint = new Paint();
+        backgroundColorPaint.setStyle(Paint.Style.FILL);
+        setRandomBackgroundColor();
     }
 
     private void initializeGameObjects(Context context, Point size) {
@@ -70,6 +78,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
     }
 
     public void newGame() {
+
         isGameOver = false;
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn(mGoldenApple);
@@ -77,6 +86,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         mGoldenApple.spawnGoldenApple();
+
         if (backgroundMusicPlayer == null || !backgroundMusicPlayer.isPlaying()) {
             playBackgroundMusic(getContext());
         }
@@ -132,10 +142,12 @@ public class SnakeGame extends SurfaceView implements Runnable {
 
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {
+
             mCanvas = mSurfaceHolder.lockCanvas();
             if (mCanvas != null) {
                 // Always clear the canvas at the beginning of each frame
-                mCanvas.drawColor(Color.argb(255, 26, 128, 182));
+                mCanvas.drawColor(backgroundColor);
+                // mCanvas.drawColor(Color.argb(255, 26, 128, 182));
 
                 if (showTouchScreen) {
                     drawTouchScreen(); // Display "Touch Screen" text
@@ -151,6 +163,7 @@ public class SnakeGame extends SurfaceView implements Runnable {
                 mSurfaceHolder.unlockCanvasAndPost(mCanvas);
             }
         }
+
     }
 
 
@@ -305,7 +318,8 @@ public class SnakeGame extends SurfaceView implements Runnable {
     }
 
     public void drawGameOverScreen() {
-        mCanvas.drawColor(Color.argb(255, 26, 128, 182)); // Clear the canvas
+        mCanvas.drawColor(Color.BLACK);
+       // mCanvas.drawColor(Color.argb(255, 26, 128, 182)); // Clear the canvas
         mPaint.setColor(Color.RED);
         mPaint.setTextSize(200);
         String gameOverText = "Game Over";
@@ -332,6 +346,27 @@ public class SnakeGame extends SurfaceView implements Runnable {
         float x = (getWidth() - textWidth) / 2;
         float y = getHeight() / 2;
         mCanvas.drawText(customText, x, y, mPaint);
+    }
+
+    //set random background color not to bright to see objects in game
+    private void setRandomBackgroundColor() {
+        Random random = new Random();
+
+        // Generate random RGB values
+        int red = random.nextInt(135);
+        int green = random.nextInt(204);
+        int blue = random.nextInt(256);
+
+        // Lightening factor
+        float lighteningFactor = 0.09f;
+
+        // Lighten the colors
+        red = (int) (red + (255 - red) * lighteningFactor);
+        green = (int) (green + (255 - green) * lighteningFactor);
+        blue = (int) (blue + (255 - blue) * lighteningFactor);
+
+        // Set the background color
+        backgroundColor = Color.rgb(red, green, blue);
     }
 
 }
